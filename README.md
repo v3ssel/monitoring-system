@@ -98,7 +98,9 @@ For example, by loading new agents into some `./agents/` directory. Instead of a
 - The program must be built with Makefile which contains standard set of targets for GNU-programs: all, install, uninstall, clean, dvi, dist, tests. Installation directory could be arbitrary, except the building one
 - Classes must be implemented within the `s21` namespace
 - Prepare full coverage of modules that implement the business logic of the application with unit-tests using the GTest library
-- GUI implementation, based on any GUI library with API for C++17: Qt, SFML, GTK+, Nanogui, Nngui, etc.
+- GUI implementation, based on any GUI library with API for C++17: 
+  * For Linux: GTK+, CEF, Qt, JUCE
+  * For Mac: GTK+, CEF, Qt, JUCE, SFML, Nanogui, Nngui
 - The program must be implemented using the MVC pattern, and also:
      - there should be no business code in the view code
      - there should be no interface code in the controller and the model
@@ -166,4 +168,4 @@ But the situation that happened on Monday night makes you uneasy. What exactly h
 
 Having looked closely at the footage, you find nothing that would give you an answer. Most of the people stand with their backs to the camera and without sound there is no way to recognize what the conversation was about. The only thing left on the table after security left was a little sticker that said "Seb's seat".
 
-💡 [Tap here](https://forms.yandex.ru/u/635a9539c417f31d33315c4f/) **to leave your feedback on the projec**t. Pedago Team really tries to make your educational experience better.
+💡 [Tap here](https://forms.yandex.ru/cloud/64181d4873cee70c2347898c/) **to leave your feedback on the projec**t. Pedago Team really tries to make your educational experience better.
