@@ -1,20 +1,41 @@
 #include "kernel.h"
-// #include <ctime>
+#include <ctime>
+#include <fstream>
+#include <iomanip>  // std::put_time
+#include <thread>
+// #include <pthread.h>    // Скомпилируй используя -lpthread 
 
 // namespace s21 {
 // }  // namespace s21
 
 Kernel::Kernel() {
     updateActiveAgents();
+    std::thread thread_1(searchNewAgents);
+    // pthread_create(&thread_01, NULL, searchNewAgents, NULL);
 }
 
 void Kernel::makeRecord() {
-    std::ofstream log("yyyy-MM-dd.txt", std::ios::app);
+    std::time_t t = std::time(nullptr);
+    std::tm lt = *std::localtime(&t);
+    // std::cout << std::put_time(&lt, "[%Y-%m-%d %H:%M:%S]") << std::endl;
+    char date_buf[10];
+    // char time_buf[10];
+    strftime(date_buf, 10, "%y-%m-%d", &lt);
+    // strftime(time_buf, 10, "%H:%M:%S", &lt);
+    // std::cout << date_buf << std::endl;
+    // std::cout << time_buf << std::endl;
+    std::string date_str(date_buf);
+    // std::string time_str(time_buf);
+    std::string log_name = date_str + ".txt";
+    // std::cout << log_name << std::endl;
+    std::ofstream log(log_name, std::ios::app);
     if (log.is_open()) {
-        std::cout << "\n yy-MM-dd HH:mm:ss | ";
+        log << std::put_time(&lt, "[%y-%m-%d %H:%M:%S] | ");
+        // log << "[" + date_str + " " + time_str + "] | ";
         for(Agent agent: agents) {
-            std::cout << agent.toString << " | ":
+            log << agent.toString << " | ":
         }
+        log << std::endl;
     }
     log.close();
 }
@@ -24,6 +45,24 @@ void Kernel::searchNewAgents() {
 }
 
 void Kernel::updateActiveAgents() {
-    //look for
-    agents.push_back();
+    std::vector<std::string> agent_names;
+    for (auto &agent : std::filesystem::directory_iterator("./agent")) {    //поиск агентов
+        if (agent.path().extension() == ".so") {
+            // std::cout << agent.path().filename().string() << std::endl;
+            agent_names.push_back(agent.path().filename().string());
+        }
+    }
+
+    // std::vector<s21::Agent*> agents;
+    for (auto file_name : agent_names) {    //создание агентов
+        void *op = dlopen(file_name.c_str(), RTLD_LAZY);
+        s21::Agent* (*create)();
+        create = (s21::Agent*(*)())dlsym(op, "create_obj");
+        s21::Agent* ag = (s21::Agent*)create();
+        agents.push_back(ag);
+    }
+
+    for (auto agent : agents) {     //запуск агентов
+        agent->analyzeSystem();
+    }
 }

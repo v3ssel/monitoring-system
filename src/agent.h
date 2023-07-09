@@ -6,6 +6,8 @@
 namespace s21 {    
     class Agent {
     public:
+        bool active;
+        
         virtual void analyzeSystem() = 0;
         virtual std::string toString() = 0;
     };
