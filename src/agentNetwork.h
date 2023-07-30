@@ -6,8 +6,8 @@
 namespace s21 {
     class AgentNetwork : public Agent {
     public:
-        void analyzeSystem();
-        std::string toString();
+        void analyzeSystem () override;
+        std::string toString() override;
         
     private:
         std::chrono::seconds sleep_time;

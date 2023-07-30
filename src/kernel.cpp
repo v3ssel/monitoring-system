@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include <ctime>
 #include <fstream>
+#include <dlfcn.h>
 #include <iomanip>  // std::put_time
 #include <thread>
 // #include <pthread.h>    // Скомпилируй используя -lpthread 

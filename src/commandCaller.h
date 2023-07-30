@@ -3,11 +3,11 @@
 #include <fstream>
 
 class CommandCaller {
-    public:
-     static CommandCaller& getInstance();
-     std::string takeValue(std::string command); 
+  public:
+    static CommandCaller& getInstance();
+    std::string takeValue(std::string command); 
 
-   private:
+  private:
     CommandCaller() = default;
     CommandCaller(CommandCaller &cmd_caller);
     CommandCaller(CommandCaller &&cmd_caller);

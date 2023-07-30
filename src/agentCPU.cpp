@@ -1,6 +1,7 @@
 #include "agentCPU.h"
 #include "commandCaller.h"
 #include <sys/sysctl.h>
+#include <iostream>
 // #include <format>    //C++20 
 
 extern "C" s21::AgentCPU* create_obj() {
@@ -28,7 +29,7 @@ extern "C" void destroy_obj(s21::AgentCPU* agent) {
 //     return result;
 // }
 
-void s21::AgentCPU::analyzeSystem() override {
+void s21::AgentCPU::analyzeSystem() {
     // size_t len;
 
     // // int req_cpu_load[] {CTL_HW, HW_CPU_LOAD};
@@ -48,16 +49,16 @@ void s21::AgentCPU::analyzeSystem() override {
     // // system("top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1");
 
     std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
-    double cpu = stod(takeValue(command));
+    double cpu = std::stod(CommandCaller::getInstance().takeValue(command));
     std::cout << cpu << std::endl;
     
     command = "top -l 1 | awk ' /^Processes:/{print $2}'";
-    int processes = stoi(takeValue(command));
+    int processes = std::stoi(CommandCaller::getInstance().takeValue(command));
     std::cout << processes << std::endl;
 
 };
 
-std::string s21::AgentCPU::toString() override {
-    return "cpu : "s + std::to_string(this->cpu) + " | processes : "s + std::to_string(this->processes);
+std::string s21::AgentCPU::toString() {
+    return "cpu : " + std::to_string(this->cpu) + " | processes : " + std::to_string(this->processes);
     // return std::format("cpu : {} | processes : {} ", this->cpu, this->processes);
 };

@@ -87,21 +87,22 @@
 
 
 void updateActiveAgents() {
-    std::vector<std::string> agent_names;
-    for (auto &agent : std::filesystem::directory_iterator("./agent")) {    //поиск агентов
+    std::vector<std::string> agent_libs;
+    for (auto &agent : std::filesystem::directory_iterator("./agents")) {    //поиск агентов
         if (agent.path().extension() == ".so") {
             // std::cout << agent.path().filename().string() << std::endl;
-            agent_names.push_back(agent.path().filename().string());
+            agent_libs.push_back(agent.path().filename().string());
         }
     }
 
     std::vector<s21::Agent*> agents;
-    for (auto file_name : agent_names) {    //создание агентов
+    for (auto file_name : agent_libs) {    //создание агентов
         void *op = dlopen(file_name.c_str(), RTLD_LAZY);
         s21::Agent* (*create)();
         create = (s21::Agent*(*)())dlsym(op, "create_obj");
         s21::Agent* ag = (s21::Agent*)create();
         agents.push_back(ag);
+        dlclose(op);
     }
 
     for (auto agent : agents) {     //запуск агентов
@@ -119,6 +120,7 @@ void updateActiveAgents() {
 //             create = (s21::Agent*(*)())dlsym(op, "create_obj");
 //             s21::Agent* ag = (s21::Agent*)create();
 //             agents.push_back(ag);
+//             dlclose(op);
 //             ag->analyzeSystem();    //запуск агентов
 //         }
 //     }
