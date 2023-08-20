@@ -82,54 +82,55 @@
 #include <filesystem>
 #include <iostream>
 #include <vector>
+#include <thread>
 #include <dlfcn.h>
-#include "agent.h"
+#include <filesystem>
+#include "kernel.h"
 
+    std::vector<std::string> agent_names;
+    std::vector<s21::AgentsFactory> ags;
+    std::map<std::string, s21::AgentsFactory> agents;
+    std::vector<std::thread> threads;
 
-void updateActiveAgents() {
-    std::vector<std::string> agent_libs;
+void searchNewAgents() {
     for (auto &agent : std::filesystem::directory_iterator("./agents")) {    //поиск агентов
         if (agent.path().extension() == ".so") {
             // std::cout << agent.path().filename().string() << std::endl;
-            agent_libs.push_back(agent.path().filename().string());
-            std::cout << agent.path().filename().string() << std::endl;
+            // agent_names.push_back(agent.path().filename().string());
+            agent_names.push_back(agent.path().string());
+            std::cout << agent.path().string() << std::endl;
         }
-    }
-
-    std::vector<s21::Agent*> agentss;
-    for (auto file_name : agent_libs) {    //создание агентов
-        std::cout << "file_name" << std::endl;
-        void *op = dlopen(file_name.c_str(), RTLD_LAZY);
-        s21::Agent* (*create)();
-        create = (s21::Agent*(*)())dlsym(op, "create_obj");
-        s21::Agent* ag = (s21::Agent*)create();
-        agentss.push_back(ag);
-        dlclose(op);
-        std::cout << "file_name" << std::endl;
-    }
-
-    for (auto agent : agentss) {     //запуск агентов
-        agent->analyzeSystem();
     }
 }
 
-// void updateActiveAgents() {
-//     std::vector<std::string> agents;
-//     for (auto &agent : std::filesystem::directory_iterator("./agent")) {        //поиск агентов
-//         if (agent.path().extension() == ".so") {
-//             // void *op = dlopen(agent.path().filename().c_str(), RTLD_LAZY);
-//             void *op = dlopen(agent.path().filename().string(), RTLD_LAZY);    //создание агентов
-//             s21::Agent* (*create)();
-//             create = (s21::Agent*(*)())dlsym(op, "create_obj");
-//             s21::Agent* ag = (s21::Agent*)create();
-//             agents.push_back(ag);
-//             dlclose(op);
-//             ag->analyzeSystem();    //запуск агентов
-//         }
+void createAgents() {
+    for (auto file_name : agent_names) {    //создание агентов
+        // agents.insert({file_name, s21::AgentsFactory(file_name)});
+        // agents.insert(std::pair<std::string, s21::AgentsFactory>(file_name, s21::AgentsFactory(file_name)));
+        std::cout << file_name << std::endl;
+        // s21::AgentsFactory af(file_name);
+        // af.GetAgent()->analyzeSystem();
+        // std::cout << af.GetAgent()->toString() << std::endl;
+        ags.emplace_back(std::move(s21::AgentsFactory(file_name)));
+        // auto ag = std::pair<std::string, s21::AgentsFactory*> (file_name, s21::AgentsFactory(file_name));
+        // agents.insert(ag);
+
+        // ags.push_back(s21::AgentsFactory(file_name));
+    }
+}
+
+// void launchAgents() {
+//     for (auto agent : ags) {     //запуск агентов
+//         // std::thread thread(agent.second.GetAgent()->analyzeSystem());
+//         // threads.push_back();
+//         std::cout << agent.GetAgent()->toString() << std::endl;
+//         agent.GetAgent()->analyzeSystem();
 //     }
 // }
 
 int main() {
-    updateActiveAgents();
+    searchNewAgents();
+    createAgents();
+    // launchAgents();
     return 0;
 }

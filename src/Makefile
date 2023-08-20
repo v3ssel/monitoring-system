@@ -1,10 +1,11 @@
 CXX = g++
 CXXFLAGS = -std=c++17
+# LIBSFLAGS = -Wl,-rpath=./agents/
 
 all: build
 
 build: AgentCPU
-	$(CXX) $(CXXFLAGS) test.cpp ./agents/* -o test
+	$(CXX) $(CXXFLAGS) test.cpp agentsFactory.cpp ./agents/* -o test
 	@./test
 
 AgentCPU:
@@ -16,7 +17,7 @@ AgentCPU:
 AgentMemory:
 	$(CXX) agentMemory.cpp -c -o agentMemory.o
 	$(CXX) commandCaller.cpp -c -o commandCaller.o
-	$(CXX) -dynamiclib agentMemory.o commandCaller.o -install_name @rpath/$(PWD)/agents/libagentMemory.so -o libagentMemory.so
+	$(CXX) -dynamiclib agentMemory.o commandCaller.o -install_name $(PWD)/agents/libagentMemory.so -o libagentMemory.so
 	mv libagentMemory.so agents/
 
 AgentNetwork:

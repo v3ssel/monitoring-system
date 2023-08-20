@@ -3,12 +3,14 @@
 #include <unordered_map>
 #include <vector>
 #include <map>
-#include "agent.h"
+#include <thread>
+#include <filesystem>
+#include "agentsFactory.h"
 
 class Kernel {
     std::vector<std::string> agent_names;
-    std::vector<s21::Agents*> ags;
-    std::map<string, s21::AgentsFactory> agents;
+    std::vector<s21::Agent*> ags;
+    std::map<std::string, s21::AgentsFactory> agents;
     std::vector<std::thread> threads;
 
 
@@ -16,7 +18,7 @@ class Kernel {
     void makeRecord();
     void searchNewAgents();
     void updateActiveAgents();
-    void launchAgents();
+    // void launchAgents();
 };
 
 #endif

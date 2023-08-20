@@ -4,7 +4,6 @@
 #include <dlfcn.h>
 #include <iomanip>  // std::put_time
 #include <thread>
-#include <agentaFactory.h>
 // #include <pthread.h>    // Скомпилируй используя -lpthread 
 
 // namespace s21 {
@@ -70,7 +69,9 @@ void Kernel::searchNewAgents() {
     for (auto &agent : std::filesystem::directory_iterator("./agent")) {    //поиск агентов
         if (agent.path().extension() == ".so") {
             // std::cout << agent.path().filename().string() << std::endl;
-            agent_names.push_back(agent.path().filename().string());
+            // agent_names.push_back(agent.path().filename().string());
+            agent_names.push_back(agent.path().string());
+            std::cout << agent.path().string() << std::endl;
         }
     }
 }
