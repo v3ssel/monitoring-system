@@ -92,20 +92,23 @@ void updateActiveAgents() {
         if (agent.path().extension() == ".so") {
             // std::cout << agent.path().filename().string() << std::endl;
             agent_libs.push_back(agent.path().filename().string());
+            std::cout << agent.path().filename().string() << std::endl;
         }
     }
 
-    std::vector<s21::Agent*> agents;
+    std::vector<s21::Agent*> agentss;
     for (auto file_name : agent_libs) {    //создание агентов
+        std::cout << "file_name" << std::endl;
         void *op = dlopen(file_name.c_str(), RTLD_LAZY);
         s21::Agent* (*create)();
         create = (s21::Agent*(*)())dlsym(op, "create_obj");
         s21::Agent* ag = (s21::Agent*)create();
-        agents.push_back(ag);
+        agentss.push_back(ag);
         dlclose(op);
+        std::cout << "file_name" << std::endl;
     }
 
-    for (auto agent : agents) {     //запуск агентов
+    for (auto agent : agentss) {     //запуск агентов
         agent->analyzeSystem();
     }
 }

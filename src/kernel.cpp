@@ -4,6 +4,7 @@
 #include <dlfcn.h>
 #include <iomanip>  // std::put_time
 #include <thread>
+#include <agentaFactory.h>
 // #include <pthread.h>    // Скомпилируй используя -lpthread 
 
 // namespace s21 {
@@ -34,19 +35,15 @@ void Kernel::makeRecord() {
         log << std::put_time(&lt, "[%y-%m-%d %H:%M:%S] | ");
         // log << "[" + date_str + " " + time_str + "] | ";
         for(Agent agent: agents) {
-            log << agent.toString << " | ":
+            log << agent.second.GetAgent()->toString << " | ":
         }
         log << std::endl;
     }
     log.close();
 }
 
-void Kernel::searchNewAgents() {
-
-}
-
 void Kernel::updateActiveAgents() {
-    std::vector<std::string> agent_names;
+    // std::vector<std::string> agent_names;
     for (auto &agent : std::filesystem::directory_iterator("./agent")) {    //поиск агентов
         if (agent.path().extension() == ".so") {
             // std::cout << agent.path().filename().string() << std::endl;
@@ -56,14 +53,38 @@ void Kernel::updateActiveAgents() {
 
     // std::vector<s21::Agent*> agents;
     for (auto file_name : agent_names) {    //создание агентов
-        void *op = dlopen(file_name.c_str(), RTLD_LAZY);
-        s21::Agent* (*create)();
-        create = (s21::Agent*(*)())dlsym(op, "create_obj");
-        s21::Agent* ag = (s21::Agent*)create();
-        agents.push_back(ag);
+        // void *op = dlopen(file_name.c_str(), RTLD_LAZY);
+        // s21::Agent* (*create)();
+        // create = (s21::Agent*(*)())dlsym(op, "create_obj");
+        // s21::Agent* ag = (s21::Agent*)create();
+        agents.insert({file_name, AgentsFactory ag(file_name)});
     }
 
+    // for (auto agent : agents) {     //запуск агентов
+    //     agent.GetAgent()->analyzeSystem();
+    // }
+
+}
+
+void Kernel::searchNewAgents() {
+    for (auto &agent : std::filesystem::directory_iterator("./agent")) {    //поиск агентов
+        if (agent.path().extension() == ".so") {
+            // std::cout << agent.path().filename().string() << std::endl;
+            agent_names.push_back(agent.path().filename().string());
+        }
+    }
+}
+
+void Kernel::createAgents() {
+    for (auto file_name : agent_names) {    //создание агентов
+        agents.insert({file_name, AgentsFactory ag(file_name)});
+    }
+}
+
+void launchAgents() {
     for (auto agent : agents) {     //запуск агентов
-        agent->analyzeSystem();
+        std::thread thread(agent.second.GetAgent()->analyzeSystem());
+        threads.push_back();
+        // agent.second.GetAgent()->analyzeSystem();
     }
 }
