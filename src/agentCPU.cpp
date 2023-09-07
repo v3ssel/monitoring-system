@@ -2,32 +2,37 @@
 #include "commandCaller.h"
 #include <sys/sysctl.h>
 #include <iostream>
-// #include <format>    //C++20 
+#include <chrono>
+#include <thread>
 
 extern "C" s21::AgentCPU* create_obj() {
     return new s21::AgentCPU;
 }
 
-extern "C" void destroy_obj(s21::AgentCPU* agent) {
-    delete agent;
+// extern "C" void destroy_obj(s21::AgentCPU* agent) {
+//     delete agent;
+// }
+
+s21::AgentCPU::AgentCPU() {
+    is_active = true;
+    cpu = 0;
+    processes = 0;
+    readConfig(".confCPU");
 }
 
-// std::string takeValue(std::string command) {
-//     FILE* pipe = popen(command.c_str(), "r");
-//     if (!pipe) {
-//         return "";
-//     }
-
-//     char buffer[128];
-//     std::string result = "";
-//     while(!feof(pipe)) {
-//         if(fgets(buffer, 128, pipe) != NULL) {
-//             result += buffer;
-//         }
-//     }
-//     pclose(pipe);
-//     return result;
-// }
+void s21::AgentCPU::readConfig(std::string file_name) {
+    std::ifstream conf(file_name);
+    if (conf.is_open()) {
+        std::string line;
+        while (std::getline(conf, line)) {
+            if (!line.find("update_time") == std::string::npos) {
+                update_time = atoi(line.substr(line.find("update_time")).c_str());
+                std::cout << update_time << std::endl;
+            }
+        }
+    }
+    conf.close();
+}
 
 void s21::AgentCPU::analyzeSystem() {
     // size_t len;
@@ -47,18 +52,17 @@ void s21::AgentCPU::analyzeSystem() {
     // // system("top -l 1 | awk ' /^Processes:/{print $2}'");
     // // system("top -l 2 | awk ' /^CPU/{print $3 + $5}' | tail -1");
     // // system("top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1");
-
-    std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
-    double cpu = std::stod(CommandCaller::getInstance().takeValue(command));
-    std::cout << cpu << std::endl;
-    
-    command = "top -l 1 | awk ' /^Processes:/{print $2}'";
-    int processes = std::stoi(CommandCaller::getInstance().takeValue(command));
-    std::cout << processes << std::endl;
-
-};
+    while (is_active) {
+        std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
+        double cpu = std::stod(CommandCaller::getInstance().takeValue(command));
+        
+        command = "top -l 1 | awk ' /^Processes:/{print $2}'";
+        int processes = std::stoi(CommandCaller::getInstance().takeValue(command));
+        // toString();
+        std::this_thread::sleep_for(std::chrono::seconds(update_time));
+    };
+}
 
 std::string s21::AgentCPU::toString() {
     return "cpu : " + std::to_string(this->cpu) + " | processes : " + std::to_string(this->processes);
-    // return std::format("cpu : {} | processes : {} ", this->cpu, this->processes);
 };

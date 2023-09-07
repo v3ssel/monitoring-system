@@ -5,6 +5,8 @@
 namespace s21 {
     class AgentCPU : public Agent {
     public:
+        AgentCPU();
+        void readConfig(std::string file_name) override;
         void analyzeSystem() override;
         std::string toString() override;
         

@@ -20,6 +20,32 @@
 //     return std::string (buffer);
 // }
 
+// void Kernel::makeRecord() {
+//     std::time_t t = std::time(nullptr);
+//     std::tm lt = *std::localtime(&t);
+//     // std::cout << std::put_time(&lt, "[%Y-%m-%d %H:%M:%S]") << std::endl;
+//     char date_buf[10];
+//     // char time_buf[10];
+//     strftime(date_buf, 10, "%y-%m-%d", &lt);
+//     // strftime(time_buf, 10, "%H:%M:%S", &lt);
+//     // std::cout << date_buf << std::endl;
+//     // std::cout << time_buf << std::endl;
+//     std::string date_str(date_buf);
+//     // std::string time_str(time_buf);
+//     std::string log_name = date_str + ".txt";
+//     // std::cout << log_name << std::endl;
+//     std::ofstream log(log_name, std::ios::app);
+//     if (log.is_open()) {
+//         log << std::put_time(&lt, "[%y-%m-%d %H:%M:%S] | ");
+//         // log << "[" + date_str + " " + time_str + "] | ";
+//         for(Agent agent: agents) {
+//             log << agent.second.GetAgent()->toString << " | ":
+//         }
+//         log << std::endl;
+//     }
+//     log.close();
+// }
+
 // std::chrono::milliseconds ms = 8000ms;
 
 // std::atomic<int> ab = {0};
@@ -79,45 +105,45 @@
 // }
 
 
-#include <filesystem>
-#include <iostream>
-#include <vector>
-#include <thread>
-#include <dlfcn.h>
-#include <filesystem>
-#include "kernel.h"
+// #include <filesystem>
+// #include <iostream>
+// #include <vector>
+// #include <thread>
+// #include <dlfcn.h>
+// #include <filesystem>
+// #include "kernel.h"
 
-    std::vector<std::string> agent_names;
-    std::vector<s21::AgentsFactory> ags;
-    std::map<std::string, s21::AgentsFactory> agents;
-    std::vector<std::thread> threads;
+//     std::vector<std::string> agent_names;
+//     std::vector<s21::AgentsFactory> ags;
+//     std::map<std::string, s21::AgentsFactory> agents;
+//     std::vector<std::thread> threads;
 
-void searchNewAgents() {
-    for (auto &agent : std::filesystem::directory_iterator("./agents")) {    //поиск агентов
-        if (agent.path().extension() == ".so") {
-            // std::cout << agent.path().filename().string() << std::endl;
-            // agent_names.push_back(agent.path().filename().string());
-            agent_names.push_back(agent.path().string());
-            std::cout << agent.path().string() << std::endl;
-        }
-    }
-}
+// void searchNewAgents() {
+//     for (auto &agent : std::filesystem::directory_iterator("./agents")) {    //поиск агентов
+//         if (agent.path().extension() == ".so") {
+//             // std::cout << agent.path().filename().string() << std::endl;
+//             // agent_names.push_back(agent.path().filename().string());
+//             agent_names.push_back(agent.path().string());
+//             std::cout << agent.path().string() << std::endl;
+//         }
+//     }
+// }
 
-void createAgents() {
-    for (auto file_name : agent_names) {    //создание агентов
-        // agents.insert({file_name, s21::AgentsFactory(file_name)});
-        // agents.insert(std::pair<std::string, s21::AgentsFactory>(file_name, s21::AgentsFactory(file_name)));
-        std::cout << file_name << std::endl;
-        // s21::AgentsFactory af(file_name);
-        // af.GetAgent()->analyzeSystem();
-        // std::cout << af.GetAgent()->toString() << std::endl;
-        ags.emplace_back(std::move(s21::AgentsFactory(file_name)));
-        // auto ag = std::pair<std::string, s21::AgentsFactory*> (file_name, s21::AgentsFactory(file_name));
-        // agents.insert(ag);
+// void createAgents() {
+//     for (auto file_name : agent_names) {    //создание агентов
+//         // agents.insert({file_name, s21::AgentsFactory(file_name)});
+//         // agents.insert(std::pair<std::string, s21::AgentsFactory>(file_name, s21::AgentsFactory(file_name)));
+//         std::cout << file_name << std::endl;
+//         // s21::AgentsFactory af(file_name);
+//         // af.GetAgent()->analyzeSystem();
+//         // std::cout << af.GetAgent()->toString() << std::endl;
+//         ags.emplace_back(std::move(s21::AgentsFactory(file_name)));
+//         // auto ag = std::pair<std::string, s21::AgentsFactory*> (file_name, s21::AgentsFactory(file_name));
+//         // agents.insert(ag);
 
-        // ags.push_back(s21::AgentsFactory(file_name));
-    }
-}
+//         // ags.push_back(s21::AgentsFactory(file_name));
+//     }
+// }
 
 // void launchAgents() {
 //     for (auto agent : ags) {     //запуск агентов
@@ -127,10 +153,10 @@ void createAgents() {
 //         agent.GetAgent()->analyzeSystem();
 //     }
 // }
+#include "kernel.h"
 
 int main() {
-    searchNewAgents();
-    createAgents();
+    s21::Kernel k();
     // launchAgents();
     return 0;
 }

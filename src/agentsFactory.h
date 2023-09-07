@@ -11,10 +11,14 @@
 namespace s21 {
     class AgentsFactory {
        public:
-        AgentsFactory() = delete;
+        AgentsFactory() = default;
         AgentsFactory(std::string library);
         AgentsFactory(const AgentsFactory& af) = delete;
+        AgentsFactory(AgentsFactory&& af);
         ~AgentsFactory() = default;
+
+        // AgentsFactory& operator=(AgentsFactory&& af) = delete;   //need?
+        // AgentsFactory& operator=(AgentsFactory&& af);
 
         std::unique_ptr<Agent>& GetAgent();
 

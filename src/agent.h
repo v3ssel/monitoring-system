@@ -6,8 +6,10 @@
 namespace s21 {    
     class Agent {
     public:
-        bool active;
+        bool is_active;
+        int update_time;
         
+        virtual void readConfig(std::string file_name) = 0;
         virtual void analyzeSystem() = 0;
         virtual std::string toString() = 0;
     };

@@ -20,7 +20,7 @@ void s21::AgentNetwork::analyzeSystem() {
 };
 
 std::string s21::AgentNetwork::toString() {
-    return "<url> : "s + std::to_string(this->availability) + " | inet_throughput : "s + std::to_string(this->inet_throughput);
+    return "<url> : " + std::to_string(this->availability) + " | inet_throughput : " + std::to_string(this->inet_throughput);
 };
 
 // netstat -I en0 -b 5 | head -n 3

@@ -5,7 +5,7 @@ CXXFLAGS = -std=c++17
 all: build
 
 build: AgentCPU
-	$(CXX) $(CXXFLAGS) test.cpp agentsFactory.cpp ./agents/* -o test
+	$(CXX) $(CXXFLAGS) test.cpp agentsFactory.cpp kernel.cpp ./agents/* -o test
 	@./test
 
 AgentCPU:

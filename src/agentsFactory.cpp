@@ -10,6 +10,20 @@ s21::AgentsFactory::AgentsFactory(std::string library) {
     instance_ = std::unique_ptr<s21::Agent>(fcreate());
 }
 
+s21::AgentsFactory::AgentsFactory(AgentsFactory&& af) {
+    instance_ = std::move(af.instance_);
+    af.instance_ = nullptr;
+}
+
+// s21::AgentsFactory& s21::AgentsFactory::operator=(AgentsFactory&& af) {
+//     if (&af != this) {
+//         instance_ = std::move(af.instance_);
+//         af.instance_ = nullptr;
+//     }
+//     return *this;
+// }
+
+
 std::unique_ptr<s21::Agent>& s21::AgentsFactory::GetAgent() {
     return instance_;
 }
