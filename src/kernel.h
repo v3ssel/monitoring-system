@@ -18,9 +18,13 @@ namespace s21 {
         // std::vector<std::thread> threads;
 
         Kernel();
-        void makeRecord();
         void searchNewAgents();
+
+        void analyzeSystem(Agent& agent);
+        // void analyzeSystem(AgentsFactory& agent);
+        void makeRecord();
         void updateActiveAgents();
+        
         // void launchAgents();
     };
 }

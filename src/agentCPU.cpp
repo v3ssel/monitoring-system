@@ -34,7 +34,7 @@ void s21::AgentCPU::readConfig(std::string file_name) {
     conf.close();
 }
 
-void s21::AgentCPU::analyzeSystem() {
+void s21::AgentCPU::updateMetrics() {
     // size_t len;
 
     // // int req_cpu_load[] {CTL_HW, HW_CPU_LOAD};

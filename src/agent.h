@@ -10,7 +10,7 @@ namespace s21 {
         int update_time;
         
         virtual void readConfig(std::string file_name) = 0;
-        virtual void analyzeSystem() = 0;
+        virtual void updateMetrics() = 0;
         virtual std::string toString() = 0;
     };
 }

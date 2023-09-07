@@ -10,7 +10,7 @@ extern "C" void destroy_obj(s21::AgentNetwork* agent) {
     delete agent;
 }
 
-void s21::AgentNetwork::analyzeSystem() {
+void s21::AgentNetwork::updateMetrics() {
     url = "translate.yandex.ru";    // считывание с config
     std::string command = "ping -c 1 " + url + " | awk ' /^1 packets transmitted/{print $7}'";
     std::string loss = takeValue(command);

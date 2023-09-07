@@ -6,7 +6,7 @@
 namespace s21 {
     class AgentNetwork : public Agent {
     public:
-        void analyzeSystem () override;
+        void updateMetrics () override;
         std::string toString() override;
         
     private:

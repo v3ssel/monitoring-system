@@ -7,7 +7,7 @@ namespace s21 {
     public:
         AgentCPU();
         void readConfig(std::string file_name) override;
-        void analyzeSystem() override;
+        void updateMetrics() override;
         std::string toString() override;
         
     private:

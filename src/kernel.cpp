@@ -1,9 +1,7 @@
 #include "kernel.h"
 #include <ctime>
 #include <fstream>
-// #include <dlfcn.h>
 #include <iomanip>  // std::put_time
-#include <thread>
 #include <iostream>
 
 namespace s21 {
@@ -43,7 +41,7 @@ void Kernel::updateActiveAgents() {
         if (agents.find(new_agent) != agents.end()) continue;
         bool is_create = agents.emplace(new_agent, AgentsFactory(new_agent)).second;
         if (!is_create) continue;
-        bool is_launch = threads.emplace(new_agent, std::thread(agents[new_agent].GetAgent(), &analyzeSystem)).second; 
+        bool is_launch = threads.emplace(new_agent, std::thread(&Kernel::analyzeSystem, agents[new_agent].GetAgent())).second; 
         if (is_launch) agent_names.push_back(new_agent);            
     }
 }
@@ -52,9 +50,17 @@ void Kernel::searchNewAgents() {
     while (true) {
         std::cout << "in" << std::endl;
         updateActiveAgents();
-
     }
 }
+
+void Kernel::analyzeSystem(Agent& agent) {
+    agent.updateMetrics();
+}
+
+// void Kernel::analyzeSystem(AgentsFactory& agent) {
+//     agent.GetAgent()->updateMetrics();
+// }
+
 
 }  // namespace s21
 
