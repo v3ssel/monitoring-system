@@ -13,7 +13,7 @@ extern "C" s21::AgentCPU* create_obj() {
 //     delete agent;
 // }
 
-s21::AgentCPU::AgentCPU() {
+s21::AgentCPU::AgentCPU()  {
     is_active = true;
     cpu = 0;
     processes = 0;
@@ -26,6 +26,7 @@ void s21::AgentCPU::readConfig(std::string file_name) {
         std::string line;
         while (std::getline(conf, line)) {
             if (!line.find("update_time") == std::string::npos) {
+                std::cout << "dfv" << std::endl;
                 update_time = atoi(line.substr(line.find("update_time")).c_str());
                 std::cout << update_time << std::endl;
             }
@@ -53,13 +54,16 @@ void s21::AgentCPU::updateMetrics() {
     // // system("top -l 2 | awk ' /^CPU/{print $3 + $5}' | tail -1");
     // // system("top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1");
     while (is_active) {
+        std::cout << "work" << std::endl;
+        std::cout << is_active << std::endl;
         std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
-        double cpu = std::stod(CommandCaller::getInstance().takeValue(command));
+        cpu = std::stod(CommandCaller::getInstance().takeValue(command));
         
         command = "top -l 1 | awk ' /^Processes:/{print $2}'";
-        int processes = std::stoi(CommandCaller::getInstance().takeValue(command));
+        processes = std::stoi(CommandCaller::getInstance().takeValue(command));
         // toString();
         std::this_thread::sleep_for(std::chrono::seconds(update_time));
+        std::cout << is_active << std::endl;
     };
 }
 

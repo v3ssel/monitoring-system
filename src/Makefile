@@ -27,6 +27,6 @@ AgentNetwork:
 	mv libagentNetwork.so agents/
 
 clean: 
-	@rm -f test  *.o ./agents/*.so
+	@rm -f test  *.o ./agents/*.so ./logs/*.txt
 
 re: clean all

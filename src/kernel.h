@@ -1,10 +1,12 @@
 #ifndef __KERNEL_H__
 #define __KERNEL_H__
+
 #include <unordered_map>
 #include <vector>
 #include <map>
 #include <chrono>
 #include <thread>
+#include <fstream>
 #include <filesystem>
 #include "agentsFactory.h"
 
@@ -20,9 +22,10 @@ namespace s21 {
         Kernel();
         void searchNewAgents();
 
-        void analyzeSystem(Agent& agent);
-        // void analyzeSystem(AgentsFactory& agent);
-        void makeRecord();
+        // void analyzeSystem(Agent& agent);
+        // void analyzeSystem(std::unique_ptr<s21::Agent>& agent);
+        void analyzeSystem(AgentsFactory& agent);
+        void makeRecords();
         void updateActiveAgents();
         
         // void launchAgents();

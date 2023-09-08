@@ -154,9 +154,24 @@
 //     }
 // }
 #include "kernel.h"
+#include <iostream>
+// #include "agentCPU.h"
 
 int main() {
-    s21::Kernel k();
-    // launchAgents();
+    s21::Kernel k;
+    while (true) {}
+    
+    std::cout << "MAIN" << "\n";
+    // s21::AgentCPU a1();
+    // s21::AgentCPU* a1 = new s21::AgentCPU();
+    // a1->update_time = 10;
+    // // s21::AgentCPU a2(std::move(a1));
+    // s21::Agent* a2 = a1;
+    // s21::Agent* a3 = std::move(a2);
+
+    // std::cout << a1->update_time << std::endl;
+    // std::cout << a2->update_time << std::endl;
+    // std::cout << a3->update_time << std::endl;
+
     return 0;
 }

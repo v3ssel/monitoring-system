@@ -1,5 +1,6 @@
 #ifndef __AGENTCPU_H__
 #define __AGENTCPU_H__
+
 #include "agent.h"
 
 namespace s21 {
