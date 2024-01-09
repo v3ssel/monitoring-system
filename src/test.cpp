@@ -153,15 +153,27 @@
 //         agent.GetAgent()->analyzeSystem();
 //     }
 // }
-#include "kernel.h"
 #include <iostream>
 // #include "agentCPU.h"
+#include "core/kernel.h"
+#include "core/agentsFactory.h"
 
 int main() {
-    s21::Kernel k;
+    s21::Kernel k("./agents");
     while (true) {}
+
+    auto agentCPU = s21::AgentsFactory::GetInstance().GetAgent("libagentCPU.so");
+    auto agentMem = s21::AgentsFactory::GetInstance().GetAgent("libagentMemory.so");
     
+    std::unordered_map<std::string, std::shared_ptr<s21::Agent>> agents;
+
+    agents["agentCPU"] = agentCPU;
+    agents["agentMemory"] = agentMem;
+
     std::cout << "MAIN" << "\n";
+    std::cout << agents["agentCPU"]->toString() << "\n";
+    std::cout << agents["agentMemory"]->toString() << "\n";
+
     // s21::AgentCPU a1();
     // s21::AgentCPU* a1 = new s21::AgentCPU();
     // a1->update_time = 10;

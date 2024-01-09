@@ -8,10 +8,6 @@ extern "C" s21::AgentNetwork* create_obj() {
     return new s21::AgentNetwork;
 }
 
-// extern "C" void destroy_obj(s21::AgentNetwork* agent) {
-//     delete agent;
-// }
-
 s21::AgentNetwork::AgentNetwork() {
     is_active = true;
     availability = 0;
