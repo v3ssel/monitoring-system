@@ -1,7 +1,7 @@
 #ifndef _LOGRECORDSWRITER_H_
 #define _LOGRECORDSWRITER_H_
 
-#include "RecordsWriter.h"
+#include "../interfaces/RecordsWriter.h"
 
 namespace s21 {
     class LogRecordsWriter : public RecordsWriter {

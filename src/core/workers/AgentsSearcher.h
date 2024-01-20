@@ -3,8 +3,8 @@
 
 #include <string>
 #include <unordered_map>
-#include "SearcherObserver.h"
-#include "agent.h"
+#include "../interfaces/SearcherObserver.h"
+#include "../Agent.h"
 
 namespace s21 {
     class AgentsSearcher {

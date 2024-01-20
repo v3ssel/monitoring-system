@@ -1,5 +1,5 @@
-#ifndef __AGENTS_FACTORY_H__
-#define __AGENTS_FACTORY_H__
+#ifndef _AGENTS_FACTORY_H_
+#define _AGENTS_FACTORY_H_
 
 #if defined __APPLE__
     #include <dlfcn.h>
@@ -11,7 +11,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "agent.h"
+#include "../Agent.h"
 
 namespace s21 {
     class AgentsFactory {
@@ -28,4 +28,4 @@ namespace s21 {
     };
 }
 
-#endif  // __AGENTS_FACTORY_H__
+#endif  // _AGENTS_FACTORY_H_

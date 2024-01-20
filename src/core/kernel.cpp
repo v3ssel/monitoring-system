@@ -53,7 +53,7 @@ void Kernel::makeRecords() {
 void Kernel::NotifyNewAgentLoaded(const std::string &agent_name) {
     auto& agent = searcher_->getAgent(agent_name);
 
-    agent->SetObserver(this);
+    agent->setObserver(this);
     std::thread th(&Kernel::analyzeSystem, this, std::ref(agent)); 
     threads_.emplace(agent_name, (std::move(th)));
 }
@@ -92,7 +92,7 @@ void Kernel::NotifyError(const std::string& error) {
 
 std::queue<std::string> Kernel::takeCriticals() {
     std::lock_guard<std::mutex> lock(qcritical_values_mtx_);
-    
+
     std::queue<std::string> tmp = qcritical_values_;
     qerrors_ = std::queue<std::string>();
 

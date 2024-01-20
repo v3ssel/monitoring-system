@@ -4,28 +4,28 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include "AgentsObserver.h"
-#include "Comparisons.h"
+#include "interfaces/AgentsObserver.h"
+#include "utils/Comparisons.h"
 
 namespace s21 {    
     class Agent {
        public:
         bool is_active;
-        
         std::string name;
         std::string type;
+        std::vector<std::string> metrics_names_;
         int update_time;
 
-        virtual ~Agent();
+        virtual ~Agent() = default;
 
-        virtual void readConfig(const std::string& file_name) = 0;
         virtual void updateMetrics() = 0;
         virtual std::string toString() = 0;
 
-        void SetObserver(AgentsObserver* observer);
-        void SetComparisonsAndCriticals(size_t op_index, const std::string& type, const std::string& line);
+        void readConfig(const std::string& directory);
+        void setComparisonsAndCriticals(size_t op_index, const std::string& type, const std::string& line);
+        void setObserver(AgentsObserver* observer);
         
-    //    protected:
+       protected:
         bool update_time_changed;
         std::string config_name;
 

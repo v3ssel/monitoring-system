@@ -1,5 +1,5 @@
 #include <filesystem>
-#include "agentsFactory.h"
+#include "AgentsFactory.h"
 #include "AgentsSearcher.h"
 
 namespace s21 {

@@ -7,11 +7,10 @@
 #include <thread>
 #include <mutex>
 
-#include "SearcherObserver.h"
-#include "AgentsSearcher.h"
-#include "AgentsObserver.h"
-#include "AgentsFactory.h"
-#include "LogRecordsWriter.h"
+#include "interfaces/SearcherObserver.h"
+#include "interfaces/AgentsObserver.h"
+#include "workers/AgentsSearcher.h"
+#include "workers/LogRecordsWriter.h"
 
 namespace s21 {  
     class Kernel : public SearcherObserver, public AgentsObserver {
@@ -39,7 +38,7 @@ namespace s21 {
         std::queue<std::string> takeCriticals();
         std::queue<std::string> takeErrors();
         
-    //    private:
+       private:
         std::unique_ptr<AgentsSearcher> searcher_;
         std::unique_ptr<LogRecordsWriter> writer_;
 

@@ -8,7 +8,6 @@ namespace s21 {
        public:
         AgentCPU(const std::string& directory = "./config/");
         
-        void readConfig(const std::string& file_name) override;
         void updateMetrics() override;
         std::string toString() override;
         
