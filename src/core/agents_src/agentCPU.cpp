@@ -1,6 +1,11 @@
 #include <iostream>
+#include <limits>
+#include <chrono>
+#include <fstream>
 
-#include "agentCPU.h"
+#include <random>
+
+#include "AgentCPU.h"
 // #include "commandCaller.h"
 
 namespace s21 {
@@ -8,14 +13,16 @@ namespace s21 {
         return new AgentCPU;
     }
 
-    AgentCPU::AgentCPU(const std::string& conf_path) {
+    AgentCPU::AgentCPU(const std::string& directory) {
         cpu_ = 0;
         processes_ = 0;
 
         this->is_active = true;
+        this->update_time_changed = false;
+        this->update_time = 3;
         this->name = "AgentCPU";
         this->type = "CPU";
-        this->update_time = 3;
+        this->config_name = ".conf" + this->type;
 
         this->comparisons_["cpu"] = Comparisons<double>::is_equal;
         this->comparisons_["processes"] = Comparisons<int>::is_equal;
@@ -23,15 +30,15 @@ namespace s21 {
         this->critical_values_["cpu"] = std::numeric_limits<double>::max();
         this->critical_values_["processes"] = std::numeric_limits<int>::max();
 
-        readConfig(conf_path);
+        readConfig(directory + '/' + this->config_name);
     }
 
-    void AgentCPU::readConfig(const std::string &file_name) {
-        std::ifstream conf(file_name);
-        if (!conf.is_open()) {
-            send_error_(this->name + " error: Could not open configuration file: \"" + file_name + "\".");
+    void AgentCPU::readConfig(const std::string &directory) { 
+        std::ifstream conf(directory + '/' + this->config_name);
+        if (!conf.is_open() && Agent::observer_) {
+            Agent::observer_->NotifyError(this->name + " error: Could not open configuration file: \"" + directory + '/' + this->config_name + "\".");
             return;
-        }
+        } 
 
         std::string line;
         while (std::getline(conf, line)) {
@@ -42,57 +49,56 @@ namespace s21 {
                 this->type = line.substr(line.find(":") + 1);
             }
             if (line.find("update_time") == 0) {
-                this->update_time = std::stoi(line.substr(line.find(":") + 1));
+                int next_update = std::stoi(line.substr(line.find(":") + 1));
+
+                if (this->update_time != next_update) {
+                    update_time_changed = true;
+                    this->update_time = next_update;
+                }
             }
             if (line.find("cpu") == 0) {
-                this->SetComparisonsAndCriticals(3, "cpu", line);
+                Agent::SetComparisonsAndCriticals(3, "cpu", line);
             }
             if (line.find("processes") == 0) {
-                this->SetComparisonsAndCriticals(9, "processes", line);
+                Agent::SetComparisonsAndCriticals(9, "processes", line);
             }
         }
     }
 
     void AgentCPU::updateMetrics() {
-        // size_t len;
+        if (!Agent::observer_)
+            return;
 
-        // // int req_cpu_load[] {CTL_HW, HW_CPU_LOAD};
-        // // sysctl(req_cpu_load, 2, &cpu, &len, NULL, 0);
-        // sysctlbyname("kern.cpuload", &cpu, &len, NULL, 0);
-        // std::cout << "CPU load: " << cpu << "%" << std::endl;
+        std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
+        // cpu = std::stod(CommandCaller::getInstance().takeValue(command));
+        if (comparisons_["cpu"](cpu_, critical_values_["cpu"])) {
+            Agent::observer_->NotifyCritical(this->name + " CRITICAL cpu:" + std::to_string(cpu_));
+        }
 
-        // int req_proc[] {CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0};
-        // sysctl(req_proc, 4, NULL, &len, NULL, 0);
-        // processes = len / sizeof(struct kinfo_proc);
-        // std::cout << "Processes: " << processes << std::endl;
+        command = "top -l 1 | awk ' /^Processes:/{print $2}'";
+        // processes = std::stoi(CommandCaller::getInstance().takeValue(command));
+        if (comparisons_["processes"](processes_, critical_values_["processes"])) {
+            Agent::observer_->NotifyCritical(this->name + " CRITICAL: processes:" + std::to_string(processes_));
+        }
 
-        // ////////////////////////////////////////////////////
 
-        // // system("top -l 1 | awk ' /^Processes:/{print $2}'");
-        // // system("top -l 2 | awk ' /^CPU/{print $3 + $5}' | tail -1");
-        // // system("top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1");
-
-        while (is_active) {
-            std::cout << "work" << std::endl;
-            std::cout << is_active << std::endl;
-            std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
-            // cpu = std::stod(CommandCaller::getInstance().takeValue(command));
-            if (comparisons_["cpu"](cpu_, critical_values_["cpu"])) {
-                this->send_critical_value_(this->name + " CRITICAL cpu:" + std::to_string(cpu_));
+        auto awake_time = std::chrono::high_resolution_clock::now() += std::chrono::seconds(update_time);
+        while (std::chrono::high_resolution_clock::now() <= awake_time) {
+            if (update_time_changed) {
+                update_time_changed = false;
+                break;
             }
-
-            command = "top -l 1 | awk ' /^Processes:/{print $2}'";
-            // processes = std::stoi(CommandCaller::getInstance().takeValue(command));
-            if (comparisons_["processes"](processes_, critical_values_["processes"])) {
-                this->send_critical_value_(this->name + " CRITICAL: processes:" + std::to_string(processes_));
-            }
-
-            // std::this_thread::sleep_for(std::chrono::seconds(update_time));
-            std::cout << is_active << std::endl;
-        };
+        }
+        
+        Agent::observer_->NotifyResult(this->toString());
     }
 
     std::string AgentCPU::toString() {
-        return "| cpu : " + std::to_string(this->cpu_) + " | processes : " + std::to_string(this->processes_);
+        // return "cpu : " + std::to_string(cpu_) + " | processes : " + std::to_string(processes_);
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::normal_distribution<> d(-10, 10);
+
+        return "cpu : " + std::to_string(d(gen)) + " | processes : " + std::to_string(d(gen));
     }
 }

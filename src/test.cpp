@@ -154,27 +154,86 @@
 //     }
 // }
 #include <iostream>
-// #include "agentCPU.h"
-#include "core/kernel.h"
-#include "core/agentsFactory.h"
+#include <csignal>
+#include <unordered_map>
+#include <thread>
+// #include "core/agents_src/agentCPU.h"
+#include "core/Kernel.h"
+// #include "core/agentsFactory.h"
 
 int main() {
-    s21::Kernel k("./agents");
-    while (true) {}
-
-    auto agentCPU = s21::AgentsFactory::GetInstance().GetAgent("libagentCPU.so");
-    auto agentMem = s21::AgentsFactory::GetInstance().GetAgent("libagentMemory.so");
-    
-    std::unordered_map<std::string, std::shared_ptr<s21::Agent>> agents;
-
-    agents["agentCPU"] = agentCPU;
-    agents["agentMemory"] = agentMem;
+    std::signal(SIGSEGV, [](int) {
+        std::cout << "SEGA\n";
+    });
+    std::atexit([]() {
+        std::cout << "success exit\n";
+    });
 
     std::cout << "MAIN" << "\n";
-    std::cout << agents["agentCPU"]->toString() << "\n";
-    std::cout << agents["agentMemory"]->toString() << "\n";
+    
+    // bool work = true;
+    // std::unordered_map<std::string, std::thread> threads;
+    // std::string agent_name = "Ag";
 
-    // s21::AgentCPU a1();
+    // threads.emplace(agent_name, [&work]() { while (work) std::cout << "I AM A THREAD\n"; });
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+    // work = false;
+    // std::thread t(std::move(threads.at(agent_name)));
+    // threads.erase(agent_name);
+    // t.join();
+
+    // work = true;
+    // threads.emplace(agent_name, [&work]() { while (work) std::cout << "I AM A NEXT THREAD\n"; });
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+    // work = false;
+    // threads[agent_name].join();
+    
+    s21::Kernel k("C:\\Coding\\Projects\\CPP9_MonitoringSystem-1\\src\\agents");
+
+    // std::this_thread::sleep_for(std::chrono::seconds(4));
+    // std::cout << "DISABLING" << "\n";
+    // k.disableAgent("libagentCPU.so");
+    // std::cout << "DISABLED" << "\n";
+
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
+    // std::cout << "ENABLING" << "\n";
+    // k.enableAgent ("libagentCPU.so");
+    // std::cout << "ENABLED" << "\n";
+
+    std::this_thread::sleep_for(std::chrono::seconds(6));
+    std::cout << "MAIN WOKEN UP" << "\n";
+
+    // while (true) {}
+
+    // auto agentCPU = s21::AgentsFactory::GetInstance().GetAgent("libagentCPU.so");
+    // auto agentMem = s21::AgentsFactory::GetInstance().GetAgent("libagentMemory.so");
+    
+    // std::unordered_map<std::string, std::shared_ptr<s21::Agent>> agents;
+
+
+
+    // s21::AgentCPU a1;
+    // auto f = [](std::string s) {
+    //     std::cout << "CB: " << s << "\n";
+    // };
+    // a1.send_error_ = f;
+    // a1.send_critical_value_ = f;
+    
+    // a1.readConfig("./config");
+
+    // for (auto comp : a1.comparisons_) {
+    //     std::cout << comp.first << " " << a1.critical_values_[comp.first] << " ";
+    //     if (comp.second)
+    //         comp.second(0, 1);
+        
+    //     std::cout << a1.name << " " << a1.type << " " << a1.config_name << " " << a1.update_time;
+
+    //     std::cout << "\n";
+    // }
+
+
     // s21::AgentCPU* a1 = new s21::AgentCPU();
     // a1->update_time = 10;
     // // s21::AgentCPU a2(std::move(a1));

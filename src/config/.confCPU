@@ -1,5 +1,5 @@
 name:agentCPU
 type:CPU
-update_time:5
+update_time:2
 cpu>90
 processes>1500

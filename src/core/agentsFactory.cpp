@@ -1,4 +1,4 @@
-#include "agentsFactory.h"
+#include "AgentsFactory.h"
 
 namespace s21 {
     AgentsFactory &AgentsFactory::GetInstance() {
@@ -7,7 +7,7 @@ namespace s21 {
         return instance;
     }
 
-    std::shared_ptr<Agent> AgentsFactory::GetAgent(const std::string& library) {
+    std::shared_ptr<Agent> AgentsFactory::LoadAgent(const std::string& library) {
         std::function<Agent*()> fcreate;
         
         #if defined __APPLE__

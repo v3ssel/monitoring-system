@@ -1,17 +1,15 @@
-#include "agent.h"
+#include "Agent.h"
 
 namespace s21 {
-    void Agent::SetErrorsReceiver(std::function<void(std::string)> errors_receiver) {
-        this->send_error_ = errors_receiver;
-    }
+Agent::~Agent() {}
 
-    void Agent::SetCriticalValuesCallback(std::function<void(std::string)> critical_values_callback) {
-        this->send_critical_value_ = critical_values_callback;
-    }
+void Agent::SetObserver(AgentsObserver* observer) {
+    this->observer_ = observer;
+}
 
-    void Agent::SetComparisonsAndCriticals(size_t op_index, const std::string &type, const std::string& line){
-        if (line.size() <= op_index + 1) {
-            this->send_error_(this->name + " error: Could not read critical value for \"" + type + "\" metric.");
+void Agent::SetComparisonsAndCriticals(size_t op_index, const std::string &type, const std::string& line){
+        if (observer_ && line.size() <= op_index + 1) {
+            observer_->NotifyError(this->name + " error: Could not read critical value for \"" + type + "\" metric.");
             return;
         }
 

@@ -1,4 +1,4 @@
-CXX = g++
+CXX = g++ -g
 CXXFLAGS = -std=c++17
 # LIBSFLAGS = -Wl,-rpath=./agents/
 PROJECTDIR = $(CURDIR)
@@ -8,20 +8,26 @@ AGENTS_SOURCES_DIR = $(PROJECTDIR)/core/agents_src
 all: build
 
 build:
-	$(CXX) $(CXXFLAGS) test.cpp $(CURDIR)/core/agentsFactory.cpp $(CURDIR)/core/kernel.cpp -o test
+	$(CXX) $(CXXFLAGS) test.cpp \
+					   $(CURDIR)/core/Agent.cpp \
+					   $(CURDIR)/core/AgentsFactory.cpp \
+					   $(CURDIR)/core/AgentsSearcher.cpp \
+					   $(CURDIR)/core/kernel.cpp -o test
 	@./test
 
 AgentCPU:
 	$(CXX) $(AGENTS_SOURCES_DIR)/agentCPU.cpp -c -o agentCPU.o
+	$(CXX) $(CURDIR)/core/agent.cpp -c -o agentBase.o
 	$(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
-	$(CXX) -s -shared agentCPU.o commandCaller.o -o $(AGENTSDIR)/libagentCPU.so
+	$(CXX) -s -shared agentBase.o agentCPU.o commandCaller.o -o $(AGENTSDIR)/libagentCPU.so
 # $(CXX) -dynamiclib agentCPU.o commandCaller.o -install_name $(PWD)/agents/libagentCPU.so -o libagentCPU.so
 # mv libagentCPU.so agents/
 
 AgentMemory:
 	$(CXX) $(AGENTS_SOURCES_DIR)/agentMemory.cpp -c -o agentMemory.o
+	$(CXX) $(CURDIR)/core/agent.cpp -c -o agentBase.o
 	$(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
-	$(CXX) -s -shared agentMemory.o commandCaller.o -o $(AGENTSDIR)/libagentMemory.so
+	$(CXX) -s -shared agentBase.o agentMemory.o commandCaller.o -o $(AGENTSDIR)/libagentMemory.so
 # $(CXX) -dynamiclib agentMemory.o commandCaller.o -install_name $(PWD)/agents/libagentMemory.so -o libagentMemory.so
 # mv libagentMemory.so agents/
 

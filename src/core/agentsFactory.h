@@ -20,7 +20,7 @@ namespace s21 {
         AgentsFactory(const AgentsFactory& af) = delete;   
         AgentsFactory& operator=(const AgentsFactory& af) = delete;     
 
-        std::shared_ptr<Agent> GetAgent(const std::string& name);
+        std::shared_ptr<Agent> LoadAgent(const std::string& name);
 
        private:
         AgentsFactory() = default;
