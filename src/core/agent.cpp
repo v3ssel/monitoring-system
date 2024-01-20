@@ -9,7 +9,7 @@ void Agent::SetObserver(AgentsObserver* observer) {
 
 void Agent::SetComparisonsAndCriticals(size_t op_index, const std::string &type, const std::string& line){
         if (observer_ && line.size() <= op_index + 1) {
-            observer_->NotifyError(this->name + " error: Could not read critical value for \"" + type + "\" metric.");
+            observer_->NotifyError("ERROR: " + this->name + ": Could not read critical value for \"" + type + "\" metric.");
             return;
         }
 

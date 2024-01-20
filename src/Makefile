@@ -12,14 +12,15 @@ build:
 					   $(CURDIR)/core/Agent.cpp \
 					   $(CURDIR)/core/AgentsFactory.cpp \
 					   $(CURDIR)/core/AgentsSearcher.cpp \
-					   $(CURDIR)/core/kernel.cpp -o test
+					   $(CURDIR)/core/LogRecordsWriter.cpp \
+					   $(CURDIR)/core/Kernel.cpp -o test
 	@./test
 
 AgentCPU:
-	$(CXX) $(AGENTS_SOURCES_DIR)/agentCPU.cpp -c -o agentCPU.o
-	$(CXX) $(CURDIR)/core/agent.cpp -c -o agentBase.o
+	$(CXX) $(AGENTS_SOURCES_DIR)/AgentCPU.cpp -c -o AgentCPU.o
+	$(CXX) $(CURDIR)/core/Agent.cpp -c -o AgentBase.o
 	$(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
-	$(CXX) -s -shared agentBase.o agentCPU.o commandCaller.o -o $(AGENTSDIR)/libagentCPU.so
+	$(CXX) -s -shared AgentBase.o AgentCPU.o commandCaller.o -o $(AGENTSDIR)/libagentCPU.so
 # $(CXX) -dynamiclib agentCPU.o commandCaller.o -install_name $(PWD)/agents/libagentCPU.so -o libagentCPU.so
 # mv libagentCPU.so agents/
 

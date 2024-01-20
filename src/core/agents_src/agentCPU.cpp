@@ -8,6 +8,7 @@
 #include "AgentCPU.h"
 // #include "commandCaller.h"
 
+
 namespace s21 {
     extern "C" AgentCPU* create_obj() {
         return new AgentCPU;
@@ -66,19 +67,29 @@ namespace s21 {
     }
 
     void AgentCPU::updateMetrics() {
-        if (!Agent::observer_)
+        if (!Agent::observer_) {
+            Agent::observer_->NotifyError("ERROR: " + this->name + ": observer is not set.");
             return;
-
-        std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
+        }
+        
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::normal_distribution<> d(-10, 10);
+        
+        // std::string command = "top -l 2 | awk ' /^CPU/{print 100 - $7}' | tail -1";
         // cpu = std::stod(CommandCaller::getInstance().takeValue(command));
+        cpu_ = d(gen);
+
         if (comparisons_["cpu"](cpu_, critical_values_["cpu"])) {
-            Agent::observer_->NotifyCritical(this->name + " CRITICAL cpu:" + std::to_string(cpu_));
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": cpu:" + std::to_string(cpu_));
         }
 
-        command = "top -l 1 | awk ' /^Processes:/{print $2}'";
+        // command = "top -l 1 | awk ' /^Processes:/{print $2}'";
         // processes = std::stoi(CommandCaller::getInstance().takeValue(command));
+        processes_ = d(gen);
+
         if (comparisons_["processes"](processes_, critical_values_["processes"])) {
-            Agent::observer_->NotifyCritical(this->name + " CRITICAL: processes:" + std::to_string(processes_));
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": processes:" + std::to_string(processes_));
         }
 
 
@@ -94,11 +105,6 @@ namespace s21 {
     }
 
     std::string AgentCPU::toString() {
-        // return "cpu : " + std::to_string(cpu_) + " | processes : " + std::to_string(processes_);
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::normal_distribution<> d(-10, 10);
-
-        return "cpu : " + std::to_string(d(gen)) + " | processes : " + std::to_string(d(gen));
+        return "cpu : " + std::to_string(cpu_) + " | processes : " + std::to_string(processes_);
     }
 }

@@ -5,7 +5,7 @@
 #include <functional>
 #include <memory>
 #include "AgentsObserver.h"
-#include "comparisons.h"
+#include "Comparisons.h"
 
 namespace s21 {    
     class Agent {

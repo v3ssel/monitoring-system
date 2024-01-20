@@ -170,29 +170,10 @@ int main() {
     });
 
     std::cout << "MAIN" << "\n";
-    
-    // bool work = true;
-    // std::unordered_map<std::string, std::thread> threads;
-    // std::string agent_name = "Ag";
 
-    // threads.emplace(agent_name, [&work]() { while (work) std::cout << "I AM A THREAD\n"; });
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
-    // work = false;
-    // std::thread t(std::move(threads.at(agent_name)));
-    // threads.erase(agent_name);
-    // t.join();
-
-    // work = true;
-    // threads.emplace(agent_name, [&work]() { while (work) std::cout << "I AM A NEXT THREAD\n"; });
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
-    // work = false;
-    // threads[agent_name].join();
-    
     s21::Kernel k("C:\\Coding\\Projects\\CPP9_MonitoringSystem-1\\src\\agents");
 
-    // std::this_thread::sleep_for(std::chrono::seconds(4));
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
     // std::cout << "DISABLING" << "\n";
     // k.disableAgent("libagentCPU.so");
     // std::cout << "DISABLED" << "\n";
@@ -202,47 +183,19 @@ int main() {
     // k.enableAgent ("libagentCPU.so");
     // std::cout << "ENABLED" << "\n";
 
-    std::this_thread::sleep_for(std::chrono::seconds(6));
-    std::cout << "MAIN WOKEN UP" << "\n";
+    // std::this_thread::sleep_for(std::chrono::seconds(600));
+    // std::cout << "MAIN WOKEN UP" << "\n";
 
-    // while (true) {}
-
-    // auto agentCPU = s21::AgentsFactory::GetInstance().GetAgent("libagentCPU.so");
-    // auto agentMem = s21::AgentsFactory::GetInstance().GetAgent("libagentMemory.so");
-    
-    // std::unordered_map<std::string, std::shared_ptr<s21::Agent>> agents;
-
-
-
-    // s21::AgentCPU a1;
-    // auto f = [](std::string s) {
-    //     std::cout << "CB: " << s << "\n";
-    // };
-    // a1.send_error_ = f;
-    // a1.send_critical_value_ = f;
-    
-    // a1.readConfig("./config");
-
-    // for (auto comp : a1.comparisons_) {
-    //     std::cout << comp.first << " " << a1.critical_values_[comp.first] << " ";
-    //     if (comp.second)
-    //         comp.second(0, 1);
-        
-    //     std::cout << a1.name << " " << a1.type << " " << a1.config_name << " " << a1.update_time;
-
-    //     std::cout << "\n";
-    // }
-
-
-    // s21::AgentCPU* a1 = new s21::AgentCPU();
-    // a1->update_time = 10;
-    // // s21::AgentCPU a2(std::move(a1));
-    // s21::Agent* a2 = a1;
-    // s21::Agent* a3 = std::move(a2);
-
-    // std::cout << a1->update_time << std::endl;
-    // std::cout << a2->update_time << std::endl;
-    // std::cout << a3->update_time << std::endl;
+    while (true) {
+        while (k.qcritical_values_.size() > 0) {
+            std::cout << k.qcritical_values_.front() << "\n";
+            k.qcritical_values_.pop();
+        }
+        while (k.qerrors_.size() > 0) {
+            std::cout << "ERROR: " << k.qerrors_.front() << "\n";
+            k.qerrors_.pop();
+        }
+    }
 
     return 0;
 }
