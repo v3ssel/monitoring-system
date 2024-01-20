@@ -29,10 +29,9 @@ namespace s21 {
         bool update_time_changed;
         std::string config_name;
 
+        AgentsObserver* observer_;
         std::unordered_map<std::string, std::function<bool(double, double)>> comparisons_;
         std::unordered_map<std::string, double> critical_values_;
-
-        AgentsObserver* observer_;
     };
 }
 

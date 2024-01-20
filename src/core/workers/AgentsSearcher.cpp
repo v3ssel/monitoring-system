@@ -27,13 +27,6 @@ void AgentsSearcher::search() {
         if (!created.second) continue;
 
         observer_->NotifyNewAgentLoaded(new_agent_name);
-
-        // agents_[new_agent_name]->SetResultReceiver(std::bind(&Kernel::acceptResult, this, std::placeholders::_1));
-        // agents_[new_agent_name]->SetCriticalValuesReceiver(std::bind(&Kernel::acceptCriticalValue, this, std::placeholders::_1));
-        // agents_[new_agent_name]->SetErrorsReceiver(std::bind(&Kernel::acceptError, this, std::placeholders::_1));
-
-        // std::thread th(&Kernel::analyzeSystem, this, std::ref(agents_[new_agent_name])); 
-        // threads_.emplace(new_agent_name, (std::move(th)));
     }
 }
 

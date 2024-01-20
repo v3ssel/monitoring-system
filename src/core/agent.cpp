@@ -7,7 +7,7 @@ void Agent::readConfig(const std::string &directory) {
     if (!conf.is_open() && observer_) {
         observer_->NotifyError("ERROR: " + this->name + ": Could not open the configuration file: \"" + directory + '/' + this->config_name + "\".");
         return;
-    } 
+    }
 
     std::string line;
     while (std::getline(conf, line)) {

@@ -18,6 +18,7 @@ namespace s21 {
         cpu_ = 0;
         processes_ = 0;
 
+        Agent::observer_ = nullptr;
         Agent::is_active = true;
         Agent::update_time_changed = false;
         Agent::update_time = 3;
