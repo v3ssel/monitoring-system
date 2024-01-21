@@ -19,8 +19,10 @@ namespace s21 {
         Kernel(const std::string& agents_directory = "./agents",
                const std::string& logs_directory = "./logs",
                const std::string& configs_directory = "./config",
-               int update_agents_time = 2);
+               const int update_agents_time = 2);
         ~Kernel();
+
+        void start();
 
         void searchAgents();
         void analyzeSystem(std::shared_ptr<s21::Agent>& agent);
@@ -31,6 +33,10 @@ namespace s21 {
         void disableAgent(const std::string& agent_name);
         void enableAgent(const std::string& agent_name);
         void changeUpdateAgentTime(int new_time);
+
+        void changeSearchDirectory(const std::string& new_directory);
+        void changeConfigsDirectory(const std::string& new_directory);
+        void changeLogsDirectory(const std::string& new_directory);
 
         void NotifyResult(const std::string& result) override;
         void NotifyCritical(const std::string& text) override;

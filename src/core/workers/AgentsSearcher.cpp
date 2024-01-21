@@ -33,4 +33,12 @@ void AgentsSearcher::search() {
 std::shared_ptr<Agent> &AgentsSearcher::getAgent(const std::string &agent_name) {
     return agents_[agent_name];
 }
+
+void AgentsSearcher::setSearchDirectory(const std::string &directory) {
+    agents_directory_ = directory;
+}
+
+void AgentsSearcher::setConfigDirectory(const std::string &directory) {
+    configs_directory_ = directory;
+}
 }

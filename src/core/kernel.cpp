@@ -9,16 +9,12 @@ namespace s21 {
 Kernel::Kernel(const std::string& agents_directory,
                const std::string& logs_directory,
                const std::string& configs_directory,
-               int update_agents_time) {
+               const int update_agents_time) {
     logger_ = std::make_unique<ConsoleLogger>();
-    logger_->Log("Kernel Start.", LogLevel::INFO);
-
     searcher_ = std::make_unique<AgentsSearcher>(this, agents_directory, configs_directory);
     writer_ = std::make_unique<LogRecordsWriter>(logs_directory);
 
     update_agents_time_ = update_agents_time;
-    std::thread(&Kernel::searchAgents, this).detach();
-    std::thread(&Kernel::makeRecords, this).detach();
 }
 
 Kernel::~Kernel() {
@@ -28,6 +24,13 @@ Kernel::~Kernel() {
         searcher_->getAgent(thread.first)->is_active = false;
         thread.second.join();
     }
+}
+
+void Kernel::start() {
+    logger_->Log("Kernel Start.", LogLevel::INFO);
+
+    std::thread(&Kernel::searchAgents, this).detach();
+    std::thread(&Kernel::makeRecords, this).detach();
 }
 
 void Kernel::searchAgents() {
@@ -100,6 +103,18 @@ void Kernel::enableAgent(const std::string &agent_name) {
 
 void Kernel::changeUpdateAgentTime(int new_time) {
     update_agents_time_ = new_time;
+}
+
+void Kernel::changeSearchDirectory(const std::string &new_directory) {
+    searcher_->setSearchDirectory(new_directory);
+}
+
+void Kernel::changeConfigsDirectory(const std::string &new_directory) {
+    searcher_->setConfigDirectory(new_directory);
+}
+
+void Kernel::changeLogsDirectory(const std::string &new_directory) {
+    writer_->setLogsDirectory(new_directory);
 }
 
 void Kernel::NotifyResult(const std::string& result) {

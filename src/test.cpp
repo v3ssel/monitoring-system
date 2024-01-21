@@ -171,8 +171,8 @@ int main() {
 
     std::cout << "MAIN" << "\n";
 
-    s21::Kernel k("C:\\Coding\\Projects\\CPP9_MonitoringSystem-1\\src\\agents");
-
+    s21::Kernel k;
+    k.start();
     // std::this_thread::sleep_for(std::chrono::seconds(5));
     // std::cout << "DISABLING" << "\n";
     // k.disableAgent("libagentCPU.so");
