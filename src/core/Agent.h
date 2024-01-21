@@ -6,9 +6,11 @@
 #include <memory>
 #include "interfaces/AgentsObserver.h"
 #include "utils/Comparisons.h"
+#include "workers/AgentConfigReader.h"
 
 namespace s21 {    
     class Agent {
+        friend class AgentConfigReader;
        public:
         bool is_active;
         std::string name;
@@ -16,20 +18,22 @@ namespace s21 {
         std::vector<std::string> metrics_names_;
         int update_time;
 
+        Agent();
         virtual ~Agent() = default;
 
         virtual void updateMetrics() = 0;
         virtual std::string toString() = 0;
 
-        void readConfig(const std::string& directory);
-        void setComparisonsAndCriticals(size_t op_index, const std::string& type, const std::string& line);
+        virtual void readConfig(const std::string& directory);
         void setObserver(AgentsObserver* observer);
         
        protected:
-        bool update_time_changed;
-        std::string config_name;
+        bool update_time_changed_;
+        std::string config_name_;
 
         AgentsObserver* observer_;
+        std::unique_ptr<AgentConfigReader> config_reader_;
+
         std::unordered_map<std::string, std::function<bool(double, double)>> comparisons_;
         std::unordered_map<std::string, double> critical_values_;
     };

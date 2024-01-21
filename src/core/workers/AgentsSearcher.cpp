@@ -12,6 +12,11 @@ AgentsSearcher::AgentsSearcher(SearcherObserver* observer,
 }
 
 void AgentsSearcher::search() {
+    if (!std::filesystem::exists(agents_directory_)) {
+        observer_->NotifyError("ERROR: AgentsSearcher::search(): Search Directory \"" + agents_directory_ + "\" not found.");
+        return;
+    }
+
     for (auto &agent : std::filesystem::directory_iterator(agents_directory_)) { 
         if (agent.path().extension() != ".so") continue;
 

@@ -1,6 +1,5 @@
-name:agentCPU
-type:CPU
-update_time:5   ;in sec
-;Критические значения метрик:
-cpu>90
-processes>1500
+name:AgentNetwork
+type:NET
+update_time:5
+google.com==1
+inet_throughput>100
