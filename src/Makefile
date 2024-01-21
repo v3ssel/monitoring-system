@@ -2,6 +2,7 @@ CXX = g++ -g
 CXXFLAGS = -std=c++17
 # LIBSFLAGS = -Wl,-rpath=./agents/
 PROJECTDIR = $(CURDIR)
+BUILDDIR = $(CURDIR)/build
 AGENTSDIR = $(PROJECTDIR)/agents
 AGENTS_SOURCES_DIR = $(PROJECTDIR)/core/agents_src
 
@@ -18,11 +19,16 @@ build:
 					   $(CURDIR)/core/Kernel.cpp -o test
 	@./test
 
-AgentCPU:
-	$(CXX) $(AGENTS_SOURCES_DIR)/AgentCPU.cpp -c -o AgentCPU.o
-	$(CXX) $(CURDIR)/core/Agent.cpp -c -o AgentBase.o
-	$(CXX) $(CURDIR)/core/workers/AgentConfigReader.cpp -c -o AgentConfigReader.o
-	$(CXX) -s -shared AgentBase.o AgentCPU.o AgentConfigReader.o -o $(AGENTSDIR)/libagentCPU.so
+AgentCPU: $(BUILDDIR)-agentcpu
+	cd $(BUILDDIR)-agentcpu && \
+	cmake ../ -DBUILD_AGENTCPU=ON -G "Unix Makefiles" && \
+	cmake --build . --config=Release
+
+	
+# $(CXX) $(AGENTS_SOURCES_DIR)/AgentCPU.cpp -c -o AgentCPU.o
+# $(CXX) $(CURDIR)/core/Agent.cpp -c -o AgentBase.o
+# $(CXX) $(CURDIR)/core/workers/AgentConfigReader.cpp -c -o AgentConfigReader.o
+# $(CXX) -s -shared AgentBase.o AgentCPU.o AgentConfigReader.o -o $(AGENTSDIR)/libagentCPU.so
 # $(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
 # $(CXX) -dynamiclib agentCPU.o commandCaller.o -install_name $(PWD)/agents/libagentCPU.so -o libagentCPU.so
 # mv libagentCPU.so agents/
@@ -40,6 +46,9 @@ AgentNetwork:
 	$(CXX) commandCaller.cpp -c -o commandCaller.o
 	$(CXX) -dynamiclib agentNetwork.o commandCaller.o -install_name $(PWD)/agents/libagentNetwork.so -o libagentNetwork.so
 	mv libagentNetwork.so agents/
+
+$(BUILDDIR)-%:
+	mkdir -p $@
 
 clean: 
 	@rm -f test  *.o ./agents/*.so ./logs/*.txt
