@@ -11,15 +11,15 @@
 #include "interfaces/AgentsObserver.h"
 #include "workers/AgentsSearcher.h"
 #include "workers/LogRecordsWriter.h"
+#include "ConsoleLogger.h"
 
 namespace s21 {  
     class Kernel : public SearcherObserver, public AgentsObserver {
        public:
-        int update_agents_time;
-
         Kernel(const std::string& agents_directory = "./agents",
                const std::string& logs_directory = "./logs",
-               const std::string& configs_directory = "./config");
+               const std::string& configs_directory = "./config",
+               int update_agents_time = 2);
         ~Kernel();
 
         void searchAgents();
@@ -30,6 +30,7 @@ namespace s21 {
 
         void disableAgent(const std::string& agent_name);
         void enableAgent(const std::string& agent_name);
+        void changeUpdateAgentTime(int new_time);
 
         void NotifyResult(const std::string& result) override;
         void NotifyCritical(const std::string& text) override;
@@ -39,6 +40,7 @@ namespace s21 {
         std::queue<std::string> takeErrors();
         
        private:
+        std::unique_ptr<Logger> logger_;
         std::unique_ptr<AgentsSearcher> searcher_;
         std::unique_ptr<LogRecordsWriter> writer_;
 
@@ -46,6 +48,8 @@ namespace s21 {
 
         std::queue<std::string> qmetrics_, qcritical_values_, qerrors_;
         std::mutex qmetrics_mtx_, qcritical_values_mtx_, qerrors_mtx_;
+
+        int update_agents_time_;
     };
 }
 

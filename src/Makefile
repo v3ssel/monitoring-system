@@ -10,9 +10,10 @@ all: build
 build:
 	$(CXX) $(CXXFLAGS) test.cpp \
 					   $(CURDIR)/core/Agent.cpp \
-					   $(CURDIR)/core/AgentsFactory.cpp \
-					   $(CURDIR)/core/AgentsSearcher.cpp \
-					   $(CURDIR)/core/LogRecordsWriter.cpp \
+					   $(CURDIR)/core/ConsoleLogger.cpp \
+					   $(CURDIR)/core/workers/AgentsFactory.cpp \
+					   $(CURDIR)/core/workers/AgentsSearcher.cpp \
+					   $(CURDIR)/core/workers/LogRecordsWriter.cpp \
 					   $(CURDIR)/core/Kernel.cpp -o test
 	@./test
 

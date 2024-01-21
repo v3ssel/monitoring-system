@@ -187,14 +187,19 @@ int main() {
     // std::cout << "MAIN WOKEN UP" << "\n";
 
     while (true) {
-        while (k.qcritical_values_.size() > 0) {
-            std::cout << k.qcritical_values_.front() << "\n";
-            k.qcritical_values_.pop();
+        auto crit = k.takeCriticals();
+        while (crit.size() > 0) {
+            std::cout << crit.front() << "\n";
+            crit.pop();
         }
-        while (k.qerrors_.size() > 0) {
-            std::cout << "ERROR: " << k.qerrors_.front() << "\n";
-            k.qerrors_.pop();
+
+        auto err = k.takeErrors();
+        while (err.size() > 0) {
+            std::cout << "ERROR: " << err.front() << "\n";
+            err.pop();
         }
+
+        std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 
     return 0;

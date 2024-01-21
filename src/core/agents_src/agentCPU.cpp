@@ -66,7 +66,7 @@ namespace s21 {
         }
 
 
-        auto awake_time = std::chrono::high_resolution_clock::now() += std::chrono::seconds(update_time);
+        auto awake_time = std::chrono::high_resolution_clock::now() + std::chrono::seconds(update_time);
         while (std::chrono::high_resolution_clock::now() <= awake_time) {
             if (update_time_changed) {
                 update_time_changed = false;
