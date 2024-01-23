@@ -6,6 +6,7 @@
 namespace s21 {
     class Observer {
        public:
+        virtual ~Observer() = default;
         virtual void NotifyError(const std::string& message) = 0;
     };
 }

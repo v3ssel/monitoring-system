@@ -10,6 +10,7 @@ namespace s21 {
        public:
         ConfigReader(Agent* agent) { agent_ = agent; }
         virtual ~ConfigReader() {}
+        
         virtual void read(const std::string&) = 0;
         
        protected:

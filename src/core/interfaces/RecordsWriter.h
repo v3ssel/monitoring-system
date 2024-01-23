@@ -7,6 +7,7 @@
 namespace s21 {
     class RecordsWriter {
        public:
+        virtual ~RecordsWriter() = default;
         virtual void write(std::queue<std::string>&) = 0;
         virtual void setLogsDirectory(const std::string&) = 0;
     };

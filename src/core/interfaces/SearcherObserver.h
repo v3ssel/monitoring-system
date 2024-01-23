@@ -7,6 +7,7 @@
 namespace s21 {
     class SearcherObserver : public s21::Observer {
        public:
+        virtual ~SearcherObserver() = default;
         virtual void NotifyNewAgentLoaded(const std::string& agent_name) = 0;
     };
 }
