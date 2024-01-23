@@ -38,6 +38,13 @@ AgentNetwork:
 	$(CXX) -dynamiclib agentNetwork.o commandCaller.o -install_name $(PWD)/agents/libagentNetwork.so -o libagentNetwork.so
 	mv libagentNetwork.so agents/
 
+
+tests: $(BUILDDIR)-testing
+	cd $(BUILDDIR)-testing && \
+	cmake ../ -DTESTING=ON -G "Unix Makefiles" && \
+	cmake --build . --config=RelWithDebInfo
+
+
 $(BUILDDIR)-%:
 	mkdir -p $@
 

@@ -4,11 +4,16 @@
 
 class TestObsvr : public s21::SearcherObserver {
    public:
+    void NotifyError(const std::string& message) override {
+        last_err = message;
+    }
+
     void NotifyNewAgentLoaded(const std::string& agent_name) override {
         names.insert(agent_name);
     }
 
     std::set<std::string> names;
+    std::string last_err;
 };
 
 TEST(AgentSearcher, Search) {
@@ -19,6 +24,7 @@ TEST(AgentSearcher, Search) {
 
     searcher.search();
 
-    EXPECT_EQ(obsvr.names.count("libagentCPU.so"), 1);
-    EXPECT_TRUE(searcher.getAgent("libagentCPU.so")->is_active);
+    EXPECT_EQ(obsvr.names.count("libAgentCPU.dll"), 1);
+    EXPECT_TRUE(searcher.getAgent("libAgentCPU.dll")->is_active);
+    EXPECT_TRUE(obsvr.last_err.empty());
 }
