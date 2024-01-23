@@ -96,19 +96,19 @@ if(BUILD_KERNEL)
         ${COMMON_SOURCES}
         Kernel.h
         Kernel.cpp
-        ConsoleLogger.h
-        ConsoleLogger.cpp
-
+        
         interfaces/Logger.h
         interfaces/RecordsWriter.h
         interfaces/SearcherObserver.h
-
+        
         workers/AgentsFactory.h
         workers/AgentsFactory.cpp
         workers/AgentsSearcher.h
         workers/AgentsSearcher.cpp
         workers/LogRecordsWriter.h
         workers/LogRecordsWriter.cpp
+        workers/ConsoleLogger.h
+        workers/ConsoleLogger.cpp
     )
 
     add_library(MonitoringKernel SHARED

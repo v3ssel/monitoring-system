@@ -11,7 +11,7 @@
 #include "interfaces/AgentsObserver.h"
 #include "workers/AgentsSearcher.h"
 #include "workers/LogRecordsWriter.h"
-#include "ConsoleLogger.h"
+#include "workers/ConsoleLogger.h"
 
 namespace s21 {  
     class Kernel : public SearcherObserver, public AgentsObserver {

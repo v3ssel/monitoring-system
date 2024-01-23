@@ -1,7 +1,7 @@
 #ifndef _CONSOLELOGGER_H_
 #define _CONSOLELOGGER_H_
 
-#include "interfaces/Logger.h"
+#include "../interfaces/Logger.h"
 
 namespace s21 {
     class ConsoleLogger : public Logger {
