@@ -11,7 +11,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "../Agent.h"
+#include "../agents/Agent.h"
 
 namespace s21 {
     class AgentsFactory {

@@ -18,7 +18,7 @@ void AgentsSearcher::search() {
     }
 
     for (auto &agent : std::filesystem::directory_iterator(agents_directory_)) { 
-        if (agent.path().extension() != ".so" || 
+        if (agent.path().extension() != ".so" &&
             agent.path().extension() != ".dll")
             continue;
 

@@ -2,19 +2,14 @@
 #define _AGENTCONFIGREADER_H_
 
 #include <string>
+#include "../interfaces/ConfigReader.h"
 
 namespace s21 {
-    class Agent;
-
-    class AgentConfigReader {
+    class AgentConfigReader : public ConfigReader {
        public:
-        AgentConfigReader();
         AgentConfigReader(Agent* agent);
-        void read(const std::string &path);
+        void read(const std::string &path) override;
         void setComparisonsAndCriticals(size_t op_index, const std::string &type, const std::string& line);
-
-       private:
-        Agent* agent_;
     };
     
 } // namespace s21

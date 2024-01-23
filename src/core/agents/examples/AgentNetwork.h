@@ -1,5 +1,5 @@
-#ifndef __AGENTNETWORK_H__
-#define __AGENTNETWORK_H__
+#ifndef _AGENTNETWORK_H_
+#define _AGENTNETWORK_H_
 
 #include "agent.h"
 #include <chrono>
@@ -19,4 +19,4 @@ namespace s21 {
     };
 }
 
-#endif
+#endif  // _AGENTNETWORK_H_

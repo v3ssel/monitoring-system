@@ -8,36 +8,27 @@ AGENTS_SOURCES_DIR = $(PROJECTDIR)/core/agents_src
 
 all: build
 
-build:
-	$(CXX) $(CXXFLAGS) test.cpp \
-					   $(CURDIR)/core/Agent.cpp \
-					   $(CURDIR)/core/ConsoleLogger.cpp \
-					   $(CURDIR)/core/workers/AgentsFactory.cpp \
-					   $(CURDIR)/core/workers/AgentsSearcher.cpp \
-					   $(CURDIR)/core/workers/AgentConfigReader.cpp \
-					   $(CURDIR)/core/workers/LogRecordsWriter.cpp \
-					   $(CURDIR)/core/Kernel.cpp -o test
-	@./test
+build: $(BUILDDIR)-kernel
+	cd $(BUILDDIR)-kernel && \
+	cmake ../ -DBUILD_KERNEL=ON -G "Unix Makefiles" && \
+	cmake --build . --config=Release
+
+	$(CXX) test.cpp libMonitoringKernel.dll -o test.exe
 
 AgentCPU: $(BUILDDIR)-agentcpu
 	cd $(BUILDDIR)-agentcpu && \
 	cmake ../ -DBUILD_AGENTCPU=ON -G "Unix Makefiles" && \
 	cmake --build . --config=Release
 
-	
-# $(CXX) $(AGENTS_SOURCES_DIR)/AgentCPU.cpp -c -o AgentCPU.o
-# $(CXX) $(CURDIR)/core/Agent.cpp -c -o AgentBase.o
-# $(CXX) $(CURDIR)/core/workers/AgentConfigReader.cpp -c -o AgentConfigReader.o
-# $(CXX) -s -shared AgentBase.o AgentCPU.o AgentConfigReader.o -o $(AGENTSDIR)/libagentCPU.so
-# $(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
-# $(CXX) -dynamiclib agentCPU.o commandCaller.o -install_name $(PWD)/agents/libagentCPU.so -o libagentCPU.so
-# mv libagentCPU.so agents/
 
 AgentMemory:
-	$(CXX) $(AGENTS_SOURCES_DIR)/agentMemory.cpp -c -o agentMemory.o
-	$(CXX) $(CURDIR)/core/agent.cpp -c -o agentBase.o
-	$(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
-	$(CXX) -s -shared agentBase.o agentMemory.o commandCaller.o -o $(AGENTSDIR)/libagentMemory.so
+	cd $(BUILDDIR)-agentcpu && \
+	cmake ../ -DBUILD_AGENTMEMORY=ON -G "Unix Makefiles" && \
+	cmake --build . --config=Release
+# $(CXX) $(AGENTS_SOURCES_DIR)/agentMemory.cpp -c -o agentMemory.o
+# $(CXX) $(CURDIR)/core/agent.cpp -c -o agentBase.o
+# $(CXX) $(AGENTS_SOURCES_DIR)/commandCaller.cpp -c -o commandCaller.o
+# $(CXX) -s -shared agentBase.o agentMemory.o commandCaller.o -o $(AGENTSDIR)/libagentMemory.so
 # $(CXX) -dynamiclib agentMemory.o commandCaller.o -install_name $(PWD)/agents/libagentMemory.so -o libagentMemory.so
 # mv libagentMemory.so agents/
 

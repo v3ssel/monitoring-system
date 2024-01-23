@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "../interfaces/SearcherObserver.h"
-#include "../Agent.h"
+#include "../agents/Agent.h"
 
 namespace s21 {
     class AgentsSearcher {

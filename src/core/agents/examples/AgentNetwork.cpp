@@ -22,8 +22,8 @@ void s21::AgentNetwork::readConfig(std::string file_name) {
         while (std::getline(conf, line)) {
             if (!line.find("update_time") == std::string::npos) {
                 std::cout << "dfv" << std::endl;
-                update_time = atoi(line.substr(line.find("update_time")).c_str());
-                std::cout << update_time << std::endl;
+                update_time_ = atoi(line.substr(line.find("update_time")).c_str());
+                std::cout << update_time_ << std::endl;
             }
         }
     }
@@ -37,7 +37,7 @@ void s21::AgentNetwork::updateMetrics() {
         std::string loss = CommandCaller::getInstance().takeValue(command);
         availability = loss.find("0.0%") ? 0 : 1;
         std::cout << availability << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(update_time));
+        std::this_thread::sleep_for(std::chrono::seconds(update_time_));
         std::cout << is_active << std::endl;
     };
 };

@@ -1,7 +1,8 @@
-#ifndef __AGENTCPU_H__
-#define __AGENTCPU_H__
+#ifndef _AGENTCPU_H_
+#define _AGENTCPU_H_
 
 #include "../Agent.h"
+#include "../AgentConfigReader.h"
 
 namespace s21 {
     class AgentCPU : public Agent {
@@ -9,6 +10,7 @@ namespace s21 {
         AgentCPU(const std::string& directory = "./config/");
         
         void updateMetrics() override;
+        void setUpdateTime(int new_time) override;
         std::string toString() override;
         
        private:
@@ -17,4 +19,4 @@ namespace s21 {
     };
 }
 
-#endif
+#endif  // _AGENTCPU_H_
