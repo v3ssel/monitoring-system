@@ -63,6 +63,14 @@ void Kernel::analyzeSystem(std::shared_ptr<s21::Agent> &agent) {
 
     while (agent->is_active) {
         agent->updateMetrics();
+
+        auto awake_time = std::chrono::high_resolution_clock::now() + std::chrono::seconds(agent->getUpdateTime());
+        while (std::chrono::high_resolution_clock::now() <= awake_time) {
+            if (agent->is_update_time_changed) {
+                agent->is_update_time_changed = false;
+                break;
+            }
+        }
     }
 
     logger_->Log("Agent \"" + agent->name + "\" stopped.", LogLevel::INFO);

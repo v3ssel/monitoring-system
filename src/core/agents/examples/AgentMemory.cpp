@@ -14,10 +14,6 @@ namespace s21 {
         hard_throughput = 0;
     }
     
-    void AgentMemory::readConfig(const std::string& file_name) {
-        
-    }
-
     void AgentMemory::updateMetrics() {
 
     }

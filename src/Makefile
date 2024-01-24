@@ -11,7 +11,7 @@ all: build
 build: $(BUILDDIR)-kernel
 	cd $(BUILDDIR)-kernel && \
 	cmake ../ -DINSTALLING=ON -G "Unix Makefiles" && \
-	cmake --build . --config=Release
+	cmake --build . --config=Debug
 
 	$(CXX) test.cpp libMonitoringKernel.dll -o test.exe
 

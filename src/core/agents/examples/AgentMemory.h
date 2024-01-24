@@ -1,15 +1,13 @@
 #ifndef _AGENTMEMORY_H_
 #define _AGENTMEMORY_H_
 
-#include "../agent.h"
+#include "../Agent.h"
 
 namespace s21 {
     class AgentMemory : public Agent {
        public:
         AgentMemory();
 
-        void setErrorsReceiver(std::function<void(std::string)> errors_receiver) override;
-        void readConfig(const std::string& file_name) override;
         void updateMetrics() override;
         std::string toString() override;
         

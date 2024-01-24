@@ -14,6 +14,7 @@ namespace s21 {
         using CmpFunc = std::function<bool(double, double)>;
 
         bool is_active;
+        bool is_update_time_changed;
         std::string name;
         std::string type;
         std::string config_name;
@@ -23,10 +24,12 @@ namespace s21 {
         virtual ~Agent() = default;
 
         virtual void updateMetrics() = 0;
-        virtual void setUpdateTime(int) = 0;
         virtual std::string toString() = 0;
 
         virtual void readConfig(const std::string& directory);
+        
+        void setUpdateTime(int new_time);
+        int getUpdateTime();
 
         void setObserver(AgentsObserver* observer);
         AgentsObserver* getObserver();
@@ -35,7 +38,6 @@ namespace s21 {
         void addCriticalComparison(const std::string& name, CmpFunc cmp);
 
        protected:
-        bool update_time_changed_;
         int update_time_;
 
         AgentsObserver* observer_;

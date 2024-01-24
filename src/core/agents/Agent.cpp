@@ -7,7 +7,7 @@ Agent::Agent() {
     config_reader_ = nullptr;
 
     is_active = true;
-    update_time_changed_ = false; 
+    is_update_time_changed = false; 
 
     update_time_ = 3;
 }
@@ -15,6 +15,17 @@ Agent::Agent() {
 void Agent::readConfig(const std::string &directory) {
     if (config_reader_)
         config_reader_->read(directory);
+}
+
+void Agent::setUpdateTime(int new_time) {
+    if (update_time_ != new_time) {
+        is_update_time_changed = true;
+        update_time_ = new_time;
+    }
+}
+
+int Agent::getUpdateTime() {
+    return update_time_;
 }
 
 void Agent::setObserver(AgentsObserver *observer) {

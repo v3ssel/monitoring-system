@@ -7,10 +7,9 @@
 namespace s21 {
     class AgentCPU : public Agent {
        public:
-        AgentCPU(const std::string& directory = "./config/");
+        AgentCPU();
         
         void updateMetrics() override;
-        void setUpdateTime(int new_time) override;
         std::string toString() override;
         
        private:

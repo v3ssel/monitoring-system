@@ -14,7 +14,7 @@ namespace s21 {
         return new AgentCPU;
     }
 
-    AgentCPU::AgentCPU(const std::string& directory) : Agent() {
+    AgentCPU::AgentCPU() : Agent() {
         Agent::config_reader_ = std::make_unique<AgentConfigReader>(this);
 
         cpu_ = 0;
@@ -33,8 +33,6 @@ namespace s21 {
 
         Agent::critical_values_["cpu"] = std::numeric_limits<double>::max();
         Agent::critical_values_["processes"] = std::numeric_limits<int>::max();
-
-        Agent::readConfig(directory + '/' + Agent::config_name);
     }
 
     void AgentCPU::updateMetrics() {
@@ -62,24 +60,8 @@ namespace s21 {
         if (comparisons_["processes"](processes_, critical_values_["processes"])) {
             Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": processes:" + std::to_string(processes_));
         }
-
-
-        auto awake_time = std::chrono::high_resolution_clock::now() + std::chrono::seconds(update_time_);
-        while (std::chrono::high_resolution_clock::now() <= awake_time) {
-            if (update_time_changed_) {
-                update_time_changed_ = false;
-                break;
-            }
-        }
         
         Agent::observer_->NotifyResult(this->toString());
-    }
-
-    void AgentCPU::setUpdateTime(int new_time) {
-        if (update_time_ != new_time) {
-            update_time_changed_ = true;
-            update_time_ = new_time;
-        }
     }
 
     std::string AgentCPU::toString() {
