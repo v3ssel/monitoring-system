@@ -15,6 +15,7 @@ namespace s21 {
 
          void search();
          std::shared_ptr<Agent>& getAgent(const std::string& agent_name);
+         void clearAgents();
 
          void setSearchDirectory(const std::string& directory);
          void setConfigDirectory(const std::string& directory);

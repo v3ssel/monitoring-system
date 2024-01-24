@@ -23,12 +23,20 @@ namespace s21 {
         ~Kernel();
 
         void start();
+        void stop();
 
         void searchAgents();
         void analyzeSystem(std::shared_ptr<s21::Agent>& agent);
         void makeRecords();
 
+        void startSearcher();
+        void startWriter();
+
+        void stopSearcher();
+        void stopWriter();
+
         void NotifyNewAgentLoaded(const std::string& agent_name) override;
+        std::shared_ptr<Agent>& getAgentByName(const std::string& agent_name);
 
         void disableAgent(const std::string& agent_name);
         void enableAgent(const std::string& agent_name);
@@ -50,7 +58,9 @@ namespace s21 {
         std::unique_ptr<AgentsSearcher> searcher_;
         std::unique_ptr<LogRecordsWriter> writer_;
 
-        std::unordered_map<std::string, std::thread> threads_;
+        std::unordered_map<std::string, std::thread> agents_threads_;
+        std::thread searching_thread_, records_thread_;
+        bool stop_searcher_, stop_writer_;
 
         std::queue<std::string> qmetrics_, qcritical_values_, qerrors_;
         std::mutex qmetrics_mtx_, qcritical_values_mtx_, qerrors_mtx_;

@@ -41,6 +41,10 @@ std::shared_ptr<Agent> &AgentsSearcher::getAgent(const std::string &agent_name) 
     return agents_[agent_name];
 }
 
+void AgentsSearcher::clearAgents() {
+    agents_.clear();
+}
+
 void AgentsSearcher::setSearchDirectory(const std::string &directory) {
     agents_directory_ = directory;
 }
