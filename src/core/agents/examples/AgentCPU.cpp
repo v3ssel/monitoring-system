@@ -6,7 +6,8 @@
 #include <random>
 
 #include "AgentCPU.h"
-// #include "commandCaller.h"
+#include "../AgentConfigReader.h"
+// #include "CommandCaller.h"
 
 
 namespace s21 {

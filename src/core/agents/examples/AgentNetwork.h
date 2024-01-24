@@ -2,7 +2,6 @@
 #define _AGENTNETWORK_H_
 
 #include "../Agent.h"
-#include <chrono>
 
 namespace s21 {
     class AgentNetwork : public Agent {

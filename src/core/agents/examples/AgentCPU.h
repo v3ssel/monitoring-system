@@ -2,7 +2,6 @@
 #define _AGENTCPU_H_
 
 #include "../Agent.h"
-#include "../AgentConfigReader.h"
 
 namespace s21 {
     class AgentCPU : public Agent {
