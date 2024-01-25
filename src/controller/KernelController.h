@@ -12,7 +12,10 @@ namespace s21 {
         }
        
         void setKernel(Kernel* kernel);
+        Kernel* getKernel();
+        
         std::shared_ptr<Agent>& getAgentByName(const std::string& agent_name);
+        std::set<std::string>& getActiveAgents();
 
         void startKernel();
         void stopKernel();

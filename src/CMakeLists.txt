@@ -6,7 +6,7 @@ option(TESTING    OFF)
 
 if (INSTALLING)
     set(BUILD_KERNEL ON)
-    add_subdirectory(core)
+    add_subdirectory(gui)
 endif()
 
 if (TESTING)

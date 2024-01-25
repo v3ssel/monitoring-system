@@ -5,8 +5,16 @@ namespace s21 {
         kernel_ = kernel;
     }
 
+    Kernel *KernelController::getKernel() {
+        return kernel_;
+    }
+
     std::shared_ptr<Agent> &KernelController::getAgentByName(const std::string &agent_name) {
         return kernel_->getAgentByName(agent_name);
+    }
+
+    std::set<std::string> &KernelController::getActiveAgents() {
+        return kernel_->getActiveAgents();
     }
 
     void KernelController::startKernel() {

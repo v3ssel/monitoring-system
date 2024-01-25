@@ -2,6 +2,7 @@
 #define _KERNEL_H_
 
 #include <unordered_map>
+#include <set>
 #include <queue>
 #include <chrono>
 #include <thread>
@@ -37,6 +38,7 @@ namespace s21 {
 
         void NotifyNewAgentLoaded(const std::string& agent_name) override;
         std::shared_ptr<Agent>& getAgentByName(const std::string& agent_name);
+        std::set<std::string>& getActiveAgents();
 
         void disableAgent(const std::string& agent_name);
         void enableAgent(const std::string& agent_name);
@@ -58,6 +60,7 @@ namespace s21 {
         std::unique_ptr<AgentsSearcher> searcher_;
         std::unique_ptr<LogRecordsWriter> writer_;
 
+        std::set<std::string> active_agents_;
         std::unordered_map<std::string, std::thread> agents_threads_;
         std::thread searching_thread_, records_thread_;
         bool stop_searcher_, stop_writer_;

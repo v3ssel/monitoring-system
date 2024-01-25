@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>MonitoringSystemWindow</class>
+ <widget class="QMainWindow" name="MonitoringSystemWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -295,21 +295,6 @@ QSplitter::handle {
                <property name="itemAlignment">
                 <set>Qt::AlignVCenter</set>
                </property>
-               <item>
-                <property name="text">
-                 <string>AAAAA</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>BBBBB</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>CCCC</string>
-                </property>
-               </item>
               </widget>
               <widget class="QListWidget" name="agent_info_listWidget">
                <property name="sizePolicy">

@@ -1,10 +1,10 @@
-#include "mainwindow.h"
+#include "monitoringsystemwindow.h"
 
 #include <QApplication>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    MainWindow w;
+    s21::MonitoringSystemWindow w;
     w.show();
 
     return a.exec();

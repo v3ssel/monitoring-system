@@ -14,10 +14,15 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        monitoringsystemwindow.cpp
+        monitoringsystemwindow.h
+        monitoringsystemwindow.ui
+        ../controller/KernelController.cpp
+        ../controller/KernelController.h
 )
+
+set(BUILD_KERNEL ON)
+add_subdirectory(../core ${CMAKE_BINARY_DIR}/core)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MonitoringSystem
@@ -42,7 +47,10 @@ else()
     endif()
 endif()
 
-target_link_libraries(MonitoringSystem PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(MonitoringSystem PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    MonitoringKernel
+)
 
 set_target_properties(MonitoringSystem PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
@@ -50,6 +58,8 @@ set_target_properties(MonitoringSystem PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 install(TARGETS MonitoringSystem

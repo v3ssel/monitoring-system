@@ -8,6 +8,11 @@ AGENTS_SOURCES_DIR = $(PROJECTDIR)/core/agents_src
 
 all: build
 
+install:
+	cd $(BUILDDIR)-kernel && \
+	cmake ../ -DINSTALLING=ON -G "Unix Makefiles" && \
+	cmake --build . --config=Debug
+
 build: $(BUILDDIR)-kernel
 	cd $(BUILDDIR)-kernel && \
 	cmake ../ -DINSTALLING=ON -G "Unix Makefiles" && \
