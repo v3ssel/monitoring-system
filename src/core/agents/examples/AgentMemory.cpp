@@ -15,7 +15,7 @@ namespace s21 {
     }
     
     void AgentMemory::updateMetrics() {
-
+        observer_->NotifyResult(this->toString());
     }
 
     std::string AgentMemory::toString() {

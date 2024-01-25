@@ -5,8 +5,8 @@ namespace s21 {
         kernel_ = kernel;
     }
 
-    Kernel *KernelController::getKernel() {
-        return kernel_;
+    void KernelController::deleteKernel() {
+        if (kernel_) delete kernel_;
     }
 
     std::shared_ptr<Agent> &KernelController::getAgentByName(const std::string &agent_name) {
@@ -15,6 +15,10 @@ namespace s21 {
 
     std::set<std::string> &KernelController::getActiveAgents() {
         return kernel_->getActiveAgents();
+    }
+
+    std::chrono::milliseconds KernelController::getAgentActiveTime(const std::string &agent_name) {
+        return kernel_->getAgentActiveTime(agent_name);
     }
 
     void KernelController::startKernel() {

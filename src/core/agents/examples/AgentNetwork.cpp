@@ -18,6 +18,7 @@ namespace s21 {
     }
 
     void AgentNetwork::updateMetrics() {
+        observer_->NotifyResult(this->toString());
         // url = "translate.yandex.ru";    // считывание с config
         // std::string command = "ping -c 1 " + url + " | awk ' /^1 packets transmitted/{print $7}'";
         // std::string loss = CommandCaller::getInstance().takeValue(command);

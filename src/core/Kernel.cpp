@@ -122,6 +122,7 @@ void Kernel::NotifyNewAgentLoaded(const std::string &agent_name) {
     std::thread th(&Kernel::analyzeSystem, this, std::ref(agent)); 
     agents_threads_.emplace(agent_name, (std::move(th)));
 
+    agent_start_time_.emplace(agent_name, std::chrono::high_resolution_clock::now());
     active_agents_.insert(agent_name);
 }
 
@@ -131,6 +132,14 @@ std::shared_ptr<Agent> &Kernel::getAgentByName(const std::string &agent_name) {
 
 std::set<std::string> &Kernel::getActiveAgents() {
     return active_agents_;
+}
+
+std::chrono::milliseconds Kernel::getAgentActiveTime(const std::string &agent_name) {
+    if (agent_start_time_.count(agent_name) == 0)
+        return std::chrono::milliseconds(0);
+    
+    auto timens = std::chrono::high_resolution_clock::now() - agent_start_time_[agent_name];
+    return std::chrono::duration_cast<std::chrono::milliseconds>(timens);
 }
 
 void Kernel::disableAgent(const std::string &agent_name) {
@@ -144,6 +153,8 @@ void Kernel::disableAgent(const std::string &agent_name) {
     getAgentByName(agent_name)->is_active = false;
     agents_threads_[agent_name].join();
     agents_threads_.erase(agent_name);
+
+    agent_start_time_.erase(agent_name);
     active_agents_.erase(agent_name);
 }
 
@@ -157,6 +168,8 @@ void Kernel::enableAgent(const std::string &agent_name) {
     
     getAgentByName(agent_name)->is_active = true;
     agents_threads_.emplace(agent_name, std::thread(&Kernel::analyzeSystem, this, std::ref(getAgentByName(agent_name))));
+
+    agent_start_time_.emplace(agent_name, std::chrono::high_resolution_clock::now());
     active_agents_.insert(agent_name);
 }
 

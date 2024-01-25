@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QFileSystemWatcher>
 #include <QPropertyAnimation>
 
 QT_BEGIN_NAMESPACE
@@ -31,6 +32,8 @@ namespace s21 {
         int update_agents_sec_;
 
         QThread *agents_updater_, *errors_updater_, *criticals_updater_, *logs_updater_;
+        QFileSystemWatcher* fs_watcher_;
+        int skipping_lines_;
 
         QPropertyAnimation* fadeOut(QWidget* widget, int msec);
         void fadeIn(QWidget* widget, int msec);

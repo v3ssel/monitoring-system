@@ -23,10 +23,10 @@ namespace s21 {
     }
     
     void AgentExtra::updateMetrics() {
-
+        observer_->NotifyResult(this->toString());
     }
     
     std::string AgentExtra::toString() {
-        return std::string();
+        return std::string("extra agent in work");
     }
 } // namespace s21
