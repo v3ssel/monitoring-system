@@ -11,10 +11,14 @@ namespace s21 {
         return new AgentNetwork;
     }
 
-    AgentNetwork::AgentNetwork() {
+    AgentNetwork::AgentNetwork() : Agent() {
         is_active = true;
         availability = 0;
         inet_throughput = 100;
+
+        Agent::name = "AgentNetwork";
+        Agent::type = "NET";
+        Agent::config_name = ".conf" + Agent::type;
     }
 
     void AgentNetwork::updateMetrics() {

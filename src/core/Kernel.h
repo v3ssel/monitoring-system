@@ -10,9 +10,9 @@
 
 #include "interfaces/SearcherObserver.h"
 #include "interfaces/AgentsObserver.h"
+#include "interfaces/Logger.h"
 #include "workers/AgentsSearcher.h"
 #include "workers/LogRecordsWriter.h"
-#include "workers/ConsoleLogger.h"
 
 namespace s21 {  
     class Kernel : public SearcherObserver, public AgentsObserver {

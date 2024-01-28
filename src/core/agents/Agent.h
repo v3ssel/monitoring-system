@@ -6,12 +6,19 @@
 #include <memory>
 #include "../interfaces/AgentsObserver.h"
 #include "../interfaces/ConfigReader.h"
-#include "../utils/Comparisons.h"
+#include "../utils/CompareType.h"
 
-namespace s21 {    
+namespace s21 {
+    using CmpFunc = std::function<bool(double, double)>;
+
+    struct AgentData {
+        CompareType compare_type;
+        CmpFunc compare_func;
+        double critical_val;
+    };
+
     class Agent {
        public:
-        using CmpFunc = std::function<bool(double, double)>;
 
         bool is_active;
         bool is_update_time_changed;
@@ -35,7 +42,10 @@ namespace s21 {
         AgentsObserver* getObserver();
 
         void addCriticalValue(const std::string& name, double value);
-        void addCriticalComparison(const std::string& name, CmpFunc cmp);
+        void addCriticalComparison(const std::string& name, CmpFunc cmp, CompareType type);
+
+        CompareType getCompareFncType(const std::string& metric_name);
+        double getCriticalValue(const std::string& metric_name);
 
        protected:
         int update_time_;
@@ -43,8 +53,10 @@ namespace s21 {
         AgentsObserver* observer_;
         std::unique_ptr<ConfigReader> config_reader_;
 
-        std::unordered_map<std::string, CmpFunc> comparisons_;
-        std::unordered_map<std::string, double> critical_values_;
+        // std::unordered_map<std::string, CmpFunc> comparisons_;
+        // std::unordered_map<std::string, double> critical_values_;
+
+        std::unordered_map<std::string, AgentData> compare_data_;
     };
 }
 

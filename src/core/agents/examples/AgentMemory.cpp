@@ -6,12 +6,16 @@ namespace s21 {
         return new AgentMemory;
     }
 
-    AgentMemory::AgentMemory() {
+    AgentMemory::AgentMemory() : Agent() {
         ram_total = 0;
         ram = 0;
         hard_volume = 0;
         hard_ops = 0;
         hard_throughput = 0;
+
+        Agent::name = "AgentMemory";
+        Agent::type = "MEM";
+        Agent::config_name = ".conf" + Agent::type;
     }
     
     void AgentMemory::updateMetrics() {

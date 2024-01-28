@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include "workers/ConsoleLogger.h"
 
 namespace s21 {
 

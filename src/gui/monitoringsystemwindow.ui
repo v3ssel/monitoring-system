@@ -44,7 +44,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="start_page">
        <layout class="QGridLayout" name="gridLayout_4">
@@ -185,7 +185,7 @@ QSplitter::handle {
           <property name="title">
            <string/>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2" rowstretch="0" columnstretch="0" rowminimumheight="0">
+          <layout class="QGridLayout" name="gridLayout_2">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -198,14 +198,8 @@ QSplitter::handle {
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <property name="horizontalSpacing">
-            <number>6</number>
-           </property>
            <item row="0" column="0">
             <widget class="QSplitter" name="agents_to_logs_splitter">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -216,17 +210,14 @@ QSplitter::handle {
               <bool>false</bool>
              </property>
              <widget class="QSplitter" name="agents_to_info_splitter">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
               <property name="handleWidth">
                <number>1</number>
+              </property>
+              <property name="childrenCollapsible">
+               <bool>false</bool>
               </property>
               <widget class="QListWidget" name="agents_listWidget">
                <property name="sizePolicy">
@@ -241,7 +232,7 @@ QSplitter::handle {
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="toolTip">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loaded agents list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -301,21 +292,51 @@ QSplitter::handle {
                 <set>Qt::AlignVCenter</set>
                </property>
               </widget>
-              <widget class="QListWidget" name="agent_info_listWidget">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+              <widget class="QFrame" name="agents_info_frame">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
                 </font>
                </property>
-               <property name="styleSheet">
-                <string/>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
                </property>
+               <property name="styleSheet">
+                <string notr="true">QFrame {
+	background-color: rgb(46, 47, 48);
+}
+
+QLabel {
+	color: rgb(208, 208, 208);
+}</string>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_2">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                 </layout>
+                </item>
+               </layout>
               </widget>
              </widget>
              <widget class="QSplitter" name="logs_to_errs_splitter">
@@ -345,6 +366,9 @@ QSplitter::handle {
                 <font>
                  <pointsize>11</pointsize>
                 </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
                </property>
                <property name="styleSheet">
                 <string notr="true"/>
@@ -387,6 +411,9 @@ QSplitter::handle {
                   <pointsize>11</pointsize>
                  </font>
                 </property>
+                <property name="focusPolicy">
+                 <enum>Qt::ClickFocus</enum>
+                </property>
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
@@ -402,6 +429,9 @@ QSplitter::handle {
                  <font>
                   <pointsize>11</pointsize>
                  </font>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::ClickFocus</enum>
                 </property>
                 <property name="styleSheet">
                  <string notr="true"/>

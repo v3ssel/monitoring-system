@@ -7,6 +7,7 @@
 
 #include "AgentCPU.h"
 #include "../AgentConfigReader.h"
+#include "../../utils/Comparisons.h"
 // #include "CommandCaller.h"
 
 
@@ -29,11 +30,11 @@ namespace s21 {
         Agent::metrics_names_.push_back("cpu");
         Agent::metrics_names_.push_back("processes");
 
-        Agent::comparisons_["cpu"] = Comparisons<double>::is_equal;
-        Agent::comparisons_["processes"] = Comparisons<int>::is_equal;
+        Agent::addCriticalComparison("cpu", Comparisons<double>::is_equal, CompareType::IS_EQ);
+        Agent::addCriticalComparison("processes", Comparisons<double>::is_equal, CompareType::IS_EQ);
 
-        Agent::critical_values_["cpu"] = std::numeric_limits<double>::max();
-        Agent::critical_values_["processes"] = std::numeric_limits<int>::max();
+        Agent::addCriticalValue("cpu", std::numeric_limits<double>::max());
+        Agent::addCriticalValue("processes", std::numeric_limits<double>::max());
     }
 
     void AgentCPU::updateMetrics() {
@@ -50,7 +51,7 @@ namespace s21 {
         // cpu = std::stod(CommandCaller::getInstance().takeValue(command));
         cpu_ = d(gen);
 
-        if (comparisons_["cpu"](cpu_, critical_values_["cpu"])) {
+        if (compare_data_["cpu"].compare_func(cpu_, compare_data_["cpu"].critical_val)) {
             Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": cpu:" + std::to_string(cpu_));
         }
 
@@ -58,7 +59,7 @@ namespace s21 {
         // processes = std::stoi(CommandCaller::getInstance().takeValue(command));
         processes_ = d(gen);
 
-        if (comparisons_["processes"](processes_, critical_values_["processes"])) {
+        if (compare_data_["processes"].compare_func(processes_, compare_data_["processes"].critical_val)) {
             Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": processes:" + std::to_string(processes_));
         }
         

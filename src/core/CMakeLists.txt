@@ -25,6 +25,7 @@ set(COMMON_SOURCES
     interfaces/AgentsObserver.h
 
     utils/Comparisons.h
+    utils/comparetype.h
 )
 
 if(BUILD_AGENTCPU)

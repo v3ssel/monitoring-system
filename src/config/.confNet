@@ -1,5 +1,5 @@
 name:AgentNetwork
 type:NET
-update_time:5
+update_time:3
 google.com==1
 inet_throughput>100

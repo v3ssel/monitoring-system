@@ -5,7 +5,7 @@ namespace s21 {
         return new AgentExtra;
     }
 
-    AgentExtra::AgentExtra() {
+    AgentExtra::AgentExtra() : Agent() {
         cpu_idle_usage_ = 0.0;
         cpu_user_usage_ = 0.0;
         cpu_priveleged_usage_ = 0.0;
@@ -20,6 +20,10 @@ namespace s21 {
         hard_read_time_ = 0.0;
         system_errors_ = 0;
         user_auths_ = 0;
+
+        Agent::name = "AgentExtra";
+        Agent::type = "EXT";
+        Agent::config_name = ".conf" + Agent::type;
     }
     
     void AgentExtra::updateMetrics() {

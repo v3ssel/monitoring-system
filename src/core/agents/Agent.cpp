@@ -1,5 +1,8 @@
 #include <fstream>
+#include <limits>
 #include "Agent.h"
+#include "../utils/Comparisons.h"
+#include "../utils/CompareType.h"
 
 namespace s21 {
 Agent::Agent() {
@@ -37,10 +40,27 @@ AgentsObserver *Agent::getObserver() {
 }
 
 void Agent::addCriticalValue(const std::string &name, double value) {
-    critical_values_[name] = value;
+    compare_data_[name].critical_val = value;
 }
 
-void Agent::addCriticalComparison(const std::string &name, CmpFunc cmp) {
-    comparisons_[name] = cmp;
+void Agent::addCriticalComparison(const std::string &name, CmpFunc cmp, CompareType type) {
+    compare_data_[name].compare_func = cmp;
+    compare_data_[name].compare_type = type;
+}
+
+CompareType Agent::getCompareFncType(const std::string &metric_name) {
+    if (compare_data_.count(metric_name) == 0) {
+        return CompareType::IS_EQ;
+    }
+
+    return compare_data_[metric_name].compare_type;
+}
+
+double Agent::getCriticalValue(const std::string &metric_name) {
+    if (compare_data_.count(metric_name) == 0) {
+        return std::numeric_limits<double>::max();
+    }
+
+    return compare_data_[metric_name].critical_val;
 }
 }

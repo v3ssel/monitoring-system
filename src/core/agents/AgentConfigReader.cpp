@@ -1,7 +1,8 @@
-#include "AgentConfigReader.h"
-
-#include "Agent.h"
 #include <fstream>
+#include "AgentConfigReader.h"
+#include "Agent.h"
+#include "utils/Comparisons.h"
+#include "utils/CompareType.h"
 
 namespace s21 {
 
@@ -47,26 +48,26 @@ void AgentConfigReader::setComparisonsAndCriticals(size_t op_index, const std::s
 
     if (line[op_index] == '>') {
         if (line[op_index + 1] == '=') {
-            agent_->addCriticalComparison(type, Comparisons<double>::is_greater_or_equal);
+            agent_->addCriticalComparison(type, Comparisons<double>::is_greater_or_equal, CompareType::IS_GREATER_OR_EQ);
         } else {
-            agent_->addCriticalComparison(type, Comparisons<double>::is_greater);
+            agent_->addCriticalComparison(type, Comparisons<double>::is_greater, CompareType::IS_GREATER);
         }
     }
 
     if (line[op_index] == '<') {
         if (line[op_index + 1] == '=') {
-            agent_->addCriticalComparison(type, Comparisons<double>::is_less_or_equal);
+            agent_->addCriticalComparison(type, Comparisons<double>::is_less_or_equal, CompareType::IS_LESS_OR_EQ);
         } else {
-            agent_->addCriticalComparison(type, Comparisons<double>::is_less);
+            agent_->addCriticalComparison(type, Comparisons<double>::is_less, CompareType::IS_LESS);
         }
     }
 
     if (line[op_index] == '=' && line[op_index + 1] == '=') {
-        agent_->addCriticalComparison(type, Comparisons<double>::is_equal);
+        agent_->addCriticalComparison(type, Comparisons<double>::is_equal, CompareType::IS_EQ);
     }
 
     if (line[op_index] == '!' && line[op_index + 1] == '=') {
-        agent_->addCriticalComparison(type, Comparisons<double>::is_not_equal);
+        agent_->addCriticalComparison(type, Comparisons<double>::is_not_equal, CompareType::IS_NOT_EQ);
     }
 
     agent_->addCriticalValue(type, std::stod(line.substr(value_index)));
