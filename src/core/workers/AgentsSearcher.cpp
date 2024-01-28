@@ -34,7 +34,12 @@ void AgentsSearcher::search() {
             if (!created.second)
                 continue;
                 
-            created.first->second->readConfig(configs_directory_);
+            try {
+                created.first->second->readConfig(configs_directory_);
+            } catch (std::exception &e) {
+                observer_->NotifyError("ERROR: AgentsSearcher::search(): " + new_agent_name + "::readConfig(): " + std::string(e.what()));
+            }
+
             observer_->NotifyNewAgentLoaded(new_agent_name);
         }
     } catch (std::exception &e) {

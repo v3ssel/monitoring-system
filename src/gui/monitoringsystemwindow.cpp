@@ -2,7 +2,10 @@
 #include "./ui_monitoringsystemwindow.h"
 
 #include <QGraphicsOpacityEffect>
+#include <QFileDialog>
 #include <QDir>
+#include <QChar>
+#include <QMenu>
 #include <QThread>
 #include <QLabel>
 #include <QLineEdit>
@@ -17,19 +20,11 @@ MonitoringSystemWindow::MonitoringSystemWindow(QWidget *parent)
     ui->setupUi(this);
 
     this->setWindowTitle("Monitoring System");
-    agents_directory_ = QDir::currentPath() + "/agents";
-    configs_directory_ = QDir::currentPath() + "/config";
-    logs_directory_ = QDir::currentPath() + "/logs";
+    setupWindow();
 
-    dateformat_ = "yy-MM-dd";
-    update_agents_sec_ = 2;
-    skipping_lines_ = 0;
-
-    is_active_cb_ = nullptr;
-    agent_name_le_ = nullptr;
-    agent_type_le_ = nullptr;
-    agent_upd_time_sb_ = nullptr;
-    fs_watcher_ = nullptr;
+    agents_updater_ = nullptr;
+    errors_updater_ = nullptr;
+    criticals_updater_ = nullptr;
 
     ui->stackedWidget->setCurrentIndex(0);
 
@@ -38,12 +33,15 @@ MonitoringSystemWindow::MonitoringSystemWindow(QWidget *parent)
 
     connect(ui->start_pushButton, &QAbstractButton::clicked, this, &MonitoringSystemWindow::startKernel);
     connect(ui->agents_listWidget, &QListWidget::itemClicked, this, &MonitoringSystemWindow::updateAgentInfo);
+
+    setupActions();
 }
 
 MonitoringSystemWindow::~MonitoringSystemWindow() {
-    delete ui;
-
     KernelController::getInstance().deleteKernel();
+
+    delete ui;
+    ui = nullptr;
 }
 
 void MonitoringSystemWindow::startKernel() {
@@ -59,22 +57,44 @@ void MonitoringSystemWindow::startKernel() {
     KernelController::getInstance().setKernel(k);
     KernelController::getInstance().startKernel();
 
-    agents_updater_ = QThread::create(&MonitoringSystemWindow::updateAgentsList, this);
-    agents_updater_->start();
+    if (!agents_updater_) {
+        agents_updater_ = QThread::create(&MonitoringSystemWindow::updateAgentsList, this);
+        agents_updater_->start();
+    }
 
-    errors_updater_ = QThread::create(&MonitoringSystemWindow::updateErrorsList, this);
-    errors_updater_->start();
+    if (!errors_updater_) {
+        errors_updater_ = QThread::create(&MonitoringSystemWindow::updateErrorsList, this);
+        errors_updater_->start();
+    }
 
-    criticals_updater_ = QThread::create(&MonitoringSystemWindow::updateCriticalsList, this);
-    criticals_updater_->start();
+    if (!criticals_updater_) {
+        criticals_updater_ = QThread::create(&MonitoringSystemWindow::updateCriticalsList, this);
+        criticals_updater_->start();
+    }
 
     setupFilewatcher();
+}
+
+void MonitoringSystemWindow::stopKernel() {
+    KernelController::getInstance().stopKernel();
+    clearAll();
+    setupWindow();
+
+    QPropertyAnimation* anim = fadeOut(ui->groupBox, 350);
+
+    connect(anim, &QPropertyAnimation::finished, this, [this]() {
+        ui->stackedWidget->setCurrentIndex(0);
+
+        fadeIn(ui->start_pushButton, 350);
+    });
 }
 
 void MonitoringSystemWindow::updateAgentsList() {
     while (true) {
         std::set<std::string> agents = KernelController::getInstance().getActiveAgents();
         for (auto& agent : agents) {
+            if (!ui) return;
+
             if (ui->agents_listWidget->findItems(QString::fromStdString(agent), Qt::MatchFlag::MatchExactly).empty()) {
                 ui->agents_listWidget->addItem(QString::fromStdString(agent));
             }
@@ -123,12 +143,89 @@ void MonitoringSystemWindow::updateErrorsList() {
     while (true) {
         std::queue<std::string> errs = KernelController::getInstance().takeErrors();
         while (!errs.empty()) {
+            if (!ui) return;
+
             ui->errors_listWidget->insertItem(0, QString::fromStdString(errs.front()));
             errs.pop();
         }
 
         QThread::sleep(1);
     }
+}
+
+void MonitoringSystemWindow::updateCriticalsList() {
+    while (true) {
+        std::queue<std::string> crits = KernelController::getInstance().takeCriticals();
+        while (!crits.empty()) {
+            if (!ui) return;
+
+            ui->criticals_listWidget->insertItem(0, QString::fromStdString(crits.front()));
+            crits.pop();
+        }
+
+        QThread::sleep(1);
+    }
+}
+
+void MonitoringSystemWindow::clearCriticalsList() {
+    ui->criticals_listWidget->clear();
+}
+
+void MonitoringSystemWindow::changeSearchDirectory() {
+    QString new_dir = QFileDialog::getExistingDirectory(this, "Select new search directory", QDir::currentPath());
+    if (new_dir.isNull()) return;
+    agents_directory_ = new_dir;
+
+    KernelController::getInstance().changeSearchDirectory(agents_directory_.toStdString());
+}
+
+void MonitoringSystemWindow::changeConfigsDirectory() {
+    QString new_dir = QFileDialog::getExistingDirectory(this, "Select new configs directory", QDir::currentPath());
+    if (new_dir.isNull()) return;
+    configs_directory_ = new_dir;
+
+    KernelController::getInstance().changeConfigsDirectory(configs_directory_.toStdString());
+}
+
+void MonitoringSystemWindow::changeLogsDirectory() {
+    QString new_dir = QFileDialog::getExistingDirectory(this, "Select new logs directory", QDir::currentPath());
+    if (new_dir.isNull()) return;
+    logs_directory_ = new_dir;
+
+    KernelController::getInstance().changeLogsDirectory(logs_directory_.toStdString());
+
+    delete fs_watcher_;
+    fs_watcher_ = nullptr;
+    skipping_lines_ = 0;
+    setupFilewatcher();
+}
+
+void MonitoringSystemWindow::startLogsWriter() {
+    start_writer_act_->setEnabled(false);
+    KernelController::getInstance().startWriter();
+    stop_writer_act_->setEnabled(true);
+}
+
+void MonitoringSystemWindow::stopLogsWriter() {
+    stop_writer_act_->setEnabled(false);
+    KernelController::getInstance().stopWriter();
+    start_writer_act_->setEnabled(true);
+}
+
+void MonitoringSystemWindow::startAgentsSearcher() {
+    start_searcher_act_->setEnabled(false);
+    KernelController::getInstance().startSearcher();
+    stop_searcher_act_->setEnabled(true);
+}
+
+void MonitoringSystemWindow::stopAgentsSearcher() {
+    stop_searcher_act_->setEnabled(false);
+    KernelController::getInstance().stopSearcher();
+    start_searcher_act_->setEnabled(true);
+}
+
+void MonitoringSystemWindow::clearErrorsList() {
+    ui->errors_listWidget->clear();
 }
 
 void MonitoringSystemWindow::isActiveCheckboxClicked(bool checked) {
@@ -149,6 +246,85 @@ void MonitoringSystemWindow::agentTypeLineEditEdited() {
 
 void MonitoringSystemWindow::agentUpdateTimeChanged(int new_val) {
     replaceConfigFile("update_time", QString::number(new_val));
+}
+
+void MonitoringSystemWindow::agentMetricCompareChanged(const QString &str) {
+    QComboBox* cbox = qobject_cast<QComboBox*>(sender());
+    QLabel* metric_name = metric_cmp_to_name_[cbox];
+
+    auto& agent = KernelController::getInstance().getAgentByName(last_clicked_agent_.toStdString());
+    QFile file(configs_directory_ + "/" + QString::fromStdString(agent->config_name));
+    file.open(QFile::OpenModeFlag::ReadOnly);
+
+    QStringList file_contents;
+    bool changed = false;
+    QTextStream ts(&file);
+    while (!ts.atEnd()) {
+        QString line = ts.readLine();
+        if (!changed && line.indexOf(metric_name->text(), 0, Qt::CaseInsensitive) == 0) {
+            size_t value_index = line.toStdString().find_first_of("0123456789", metric_name->text().length());
+            if (value_index != std::string::npos) {
+                QString value = line.sliced(value_index);
+                line = metric_name->text() + str + value;
+            } else {
+                line = metric_name->text() + str;
+            }
+
+            changed = true;
+        }
+        file_contents.push_back(line);
+    }
+    file.close();
+
+    if (!changed) {
+        file_contents.push_back(metric_name->text() + str);
+    }
+
+    file.open(QFile::OpenModeFlag::WriteOnly);
+    for (auto& str : file_contents) {
+        ts << str << "\n";
+    }
+}
+
+void MonitoringSystemWindow::agentMetricCriticalEdited(const QString &str) {
+    QLineEdit* ledit = qobject_cast<QLineEdit*>(sender());
+    QLabel* metric_name = metric_crit_to_name_[ledit];
+
+    auto& agent = KernelController::getInstance().getAgentByName(last_clicked_agent_.toStdString());
+    QFile file(configs_directory_ + "/" + QString::fromStdString(agent->config_name));
+    file.open(QFile::OpenModeFlag::ReadOnly);
+
+    QStringList file_contents;
+    bool changed = false;
+
+    QTextStream ts(&file);
+    while (!ts.atEnd()) {
+        QString line = ts.readLine();
+        if (!changed && line.indexOf(metric_name->text(), 0, Qt::CaseInsensitive) == 0) {
+            qsizetype metric_len = metric_name->text().length();
+            if (metric_len == line.length())
+                continue;
+
+            if (metric_len < line.length() - 1 && !line[metric_len + 1].isDigit()) {
+                line.replace(metric_len + 2, line.length(), str);
+            } else {
+                line.replace(metric_len + 1, line.length(), str);
+            }
+
+            changed = true;
+        }
+        file_contents.push_back(line);
+    }
+    file.close();
+
+    if (!changed) {
+        file_contents.push_back(metric_name->text() + ">" + str);
+    }
+
+    file.open(QFile::OpenModeFlag::WriteOnly);
+    for (auto& str : file_contents) {
+        ts << str << "\n";
+    }
 }
 
 void MonitoringSystemWindow::updateAgentInfo(QListWidgetItem* item) {
@@ -276,18 +452,12 @@ void MonitoringSystemWindow::addAgentMetricsInfo(QFrame *frame, QFont& font, std
         hbox->addWidget(combobox, 0, Qt::AlignmentFlag::AlignCenter);
         hbox->addWidget(le, 0, Qt::AlignmentFlag::AlignRight);
         frame->layout()->addWidget(widget);
-    }
-}
 
-void MonitoringSystemWindow::updateCriticalsList() {
-    while (true) {
-        std::queue<std::string> crits = KernelController::getInstance().takeCriticals();
-        while (!crits.empty()) {
-            ui->criticals_listWidget->insertItem(0, QString::fromStdString(crits.front()));
-            crits.pop();
-        }
+        connect(combobox, &QComboBox::currentTextChanged, this, &MonitoringSystemWindow::agentMetricCompareChanged);
+        connect(le, &QLineEdit::textEdited, this, &MonitoringSystemWindow::agentMetricCriticalEdited);
 
-        QThread::sleep(1);
+        metric_cmp_to_name_[combobox] = label;
+        metric_crit_to_name_[le] = label;
     }
 }
 
@@ -319,14 +489,68 @@ void MonitoringSystemWindow::fadeIn(QWidget *widget, int msec) {
     a2->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
+void MonitoringSystemWindow::setupWindow() {
+    agents_directory_ = QDir::currentPath() + "/agents";
+    configs_directory_ = QDir::currentPath() + "/config";
+    logs_directory_ = QDir::currentPath() + "/logs";
+
+    dateformat_ = "yy-MM-dd";
+    update_agents_sec_ = 2;
+    skipping_lines_ = 0;
+
+    is_active_cb_ = nullptr;
+    agent_name_le_ = nullptr;
+    agent_type_le_ = nullptr;
+    agent_upd_time_sb_ = nullptr;
+    fs_watcher_ = nullptr;
+}
+
 void MonitoringSystemWindow::setupFilewatcher() {
     QDateTime date = QDateTime::currentDateTime();
     datestr_ = date.toString(dateformat_);
 
     fs_watcher_ = new QFileSystemWatcher(this);
     fs_watcher_->addPath(logs_directory_ + "/" + datestr_ + ".txt");
+    qDebug() << "FSW: " << logs_directory_ + "/" + datestr_ + ".txt";
 
     connect(fs_watcher_, &QFileSystemWatcher::fileChanged, this, &MonitoringSystemWindow::updateLogsList);
+}
+
+void MonitoringSystemWindow::setupActions() {
+    QAction* clear_errs_action = new QAction("Clear errors.", this);
+    connect(clear_errs_action, &QAction::triggered, this, &MonitoringSystemWindow::clearErrorsList);
+    ui->errors_listWidget->addAction(clear_errs_action);
+
+    QAction* clear_crits_action = new QAction("Clear critical values.", this);
+    connect(clear_crits_action, &QAction::triggered, this, &MonitoringSystemWindow::clearCriticalsList);
+    ui->criticals_listWidget->addAction(clear_crits_action);
+
+    QAction* change_srch_dir_act = new QAction("Change search directory.", this);
+    QAction* change_conf_dir_act = new QAction("Change configs directory.", this);
+    QAction* change_logs_dir_act = new QAction("Change logs directory.", this);
+    QAction* separator = new QAction(this);
+    separator->setSeparator(true);
+    stop_searcher_act_ = new QAction("Stop agents searcher.", this);
+    start_searcher_act_ = new QAction("Start agents searcher.", this);
+    start_searcher_act_->setEnabled(false);
+
+    connect(change_srch_dir_act, &QAction::triggered, this, &MonitoringSystemWindow::changeSearchDirectory);
+    connect(change_conf_dir_act, &QAction::triggered, this, &MonitoringSystemWindow::changeConfigsDirectory);
+    connect(change_logs_dir_act, &QAction::triggered, this, &MonitoringSystemWindow::changeLogsDirectory);
+    connect(stop_searcher_act_, &QAction::triggered, this, &MonitoringSystemWindow::stopAgentsSearcher);
+    connect(start_searcher_act_, &QAction::triggered, this, &MonitoringSystemWindow::startAgentsSearcher);
+    ui->agents_listWidget->addActions({change_srch_dir_act, change_conf_dir_act, change_logs_dir_act, separator, stop_searcher_act_, start_searcher_act_});
+
+    stop_writer_act_ = new QAction("Stop logs writer.", this);
+    start_writer_act_ = new QAction("Start logs writer.", this);
+    start_writer_act_->setEnabled(false);
+    separator = new QAction(this);
+    separator->setSeparator(true);
+    stop_kernel_act_ = new QAction("STOP KERNEL", this);
+    connect(stop_writer_act_, &QAction::triggered, this, &MonitoringSystemWindow::stopLogsWriter);
+    connect(start_writer_act_, &QAction::triggered, this, &MonitoringSystemWindow::startLogsWriter);
+    connect(stop_kernel_act_, &QAction::triggered, this, &MonitoringSystemWindow::stopKernel);
+    ui->logs_listWidget->addActions({stop_writer_act_, start_writer_act_, separator, stop_kernel_act_});
 }
 
 QComboBox *MonitoringSystemWindow::getComparesComboBox() {
@@ -376,6 +600,8 @@ void MonitoringSystemWindow::clearWidget(QWidget* widget) {
     disconnect(agent_name_le_);
     disconnect(agent_type_le_);
     disconnect(agent_upd_time_sb_);
+    metric_cmp_to_name_.clear();
+    metric_crit_to_name_.clear();
 
     if (widget->layout()->count() > 0) {
         QLayoutItem* layout_item;
@@ -412,6 +638,20 @@ void MonitoringSystemWindow::replaceConfigFile(const QString& param, const QStri
     file.open(QFile::OpenModeFlag::WriteOnly);
     for (auto& str : file_contents) {
         ts << str << "\n";
+    }
+}
+
+void MonitoringSystemWindow::clearAll() {
+    clearWidget(ui->agents_info_frame);
+    clearCriticalsList();
+    clearErrorsList();
+    ui->logs_listWidget->clear();
+    ui->agents_listWidget->clear();
+
+    last_clicked_agent_ = "";
+    if (fs_watcher_) {
+        delete fs_watcher_;
+        fs_watcher_ = nullptr;
     }
 }
 }

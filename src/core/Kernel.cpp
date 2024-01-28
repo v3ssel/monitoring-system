@@ -46,6 +46,7 @@ void Kernel::stop() {
 
     agents_threads_.clear();
     searcher_->clearAgents();
+    logger_->Log("Kernel Stop Successfuly.", LogLevel::INFO);
 }
 
 void Kernel::searchAgents() {
@@ -102,6 +103,9 @@ void Kernel::startWriter() {
 }
 
 void Kernel::stopSearcher() {
+    if (stop_searcher_)
+        return;
+
     stop_searcher_ = true;
     searching_thread_.join();
 
@@ -109,6 +113,9 @@ void Kernel::stopSearcher() {
 }
 
 void Kernel::stopWriter() {
+    if (stop_writer_)
+        return;
+
     stop_writer_ = true;
     records_thread_.join();
 

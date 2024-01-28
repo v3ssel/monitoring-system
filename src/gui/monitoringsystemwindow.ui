@@ -44,7 +44,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="start_page">
        <layout class="QGridLayout" name="gridLayout_4">
@@ -234,6 +234,9 @@ QSplitter::handle {
                <property name="focusPolicy">
                 <enum>Qt::ClickFocus</enum>
                </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::ActionsContextMenu</enum>
+               </property>
                <property name="toolTip">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loaded agents list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
@@ -370,6 +373,9 @@ QLabel {
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::ActionsContextMenu</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
@@ -414,6 +420,9 @@ QLabel {
                 <property name="focusPolicy">
                  <enum>Qt::ClickFocus</enum>
                 </property>
+                <property name="contextMenuPolicy">
+                 <enum>Qt::ActionsContextMenu</enum>
+                </property>
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
@@ -432,6 +441,9 @@ QLabel {
                 </property>
                 <property name="focusPolicy">
                  <enum>Qt::ClickFocus</enum>
+                </property>
+                <property name="contextMenuPolicy">
+                 <enum>Qt::ActionsContextMenu</enum>
                 </property>
                 <property name="styleSheet">
                  <string notr="true"/>
