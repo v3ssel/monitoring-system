@@ -5,12 +5,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QChar>
-#include <QMenu>
 #include <QThread>
-#include <QLabel>
 #include <QLineEdit>
-#include <QCheckBox>
-#include <QSpinBox>
 #include "../controller/KernelController.h"
 
 namespace s21 {
@@ -28,8 +24,8 @@ MonitoringSystemWindow::MonitoringSystemWindow(QWidget *parent)
 
     ui->stackedWidget->setCurrentIndex(0);
 
-    ui->agents_to_logs_splitter->setSizes({130, 670});
-    ui->logs_to_errs_splitter->setSizes({430, 170});
+    ui->agents_to_logs_splitter->setSizes({270, 900});
+    ui->logs_to_errs_splitter->setSizes({500, 200});
 
     connect(ui->start_pushButton, &QAbstractButton::clicked, this, &MonitoringSystemWindow::startKernel);
     connect(ui->agents_listWidget, &QListWidget::itemClicked, this, &MonitoringSystemWindow::updateAgentInfo);

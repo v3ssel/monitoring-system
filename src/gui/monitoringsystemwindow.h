@@ -9,8 +9,8 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QSpinBox>
-#include "../core/utils/CompareType.h"
 #include <QLabel>
+#include "../core/utils/CompareType.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MonitoringSystemWindow; }
