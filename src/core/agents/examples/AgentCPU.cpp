@@ -30,11 +30,10 @@ namespace s21 {
         Agent::metrics_names_.push_back("cpu");
         Agent::metrics_names_.push_back("processes");
 
-        Agent::addCriticalComparison("cpu", Comparisons<double>::is_equal, CompareType::IS_EQ);
-        Agent::addCriticalComparison("processes", Comparisons<double>::is_equal, CompareType::IS_EQ);
-
-        Agent::addCriticalValue("cpu", std::numeric_limits<double>::max());
-        Agent::addCriticalValue("processes", std::numeric_limits<double>::max());
+        for (auto& metric : Agent::metrics_names_) {
+            Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
+            Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
+        }
     }
 
     void AgentCPU::updateMetrics() {

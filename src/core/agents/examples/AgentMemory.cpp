@@ -1,5 +1,6 @@
 #include "AgentMemory.h"
 #include "../AgentConfigReader.h"
+#include "../../utils/Comparisons.h"
 
 namespace s21 {
     extern "C" AgentMemory* create_obj() {
@@ -23,17 +24,47 @@ namespace s21 {
         Agent::metrics_names_.push_back("hard_volume");
         Agent::metrics_names_.push_back("hard_ops");
         Agent::metrics_names_.push_back("hard_throughput");
+
+        for (auto& metric : Agent::metrics_names_) {
+            Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
+            Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
+        }
     }
     
     void AgentMemory::updateMetrics() {
+        // ram_total_ = ...
+        if (compare_data_["ram_total"].compare_func(ram_total_, compare_data_["ram_total_"].critical_val)) {
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": ram_total:" + std::to_string(ram_total_));
+        }
+        
+        // ram_ = ...
+        if (compare_data_["ram"].compare_func(ram_, compare_data_["ram_"].critical_val)) {
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": ram:" + std::to_string(ram_));
+        }
+        
+        // hard_volume_ = ...
+        if (compare_data_["hard_volume"].compare_func(hard_volume_, compare_data_["hard_volume_"].critical_val)) {
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": hard_volume:" + std::to_string(hard_volume_));
+        }
+        
+        // hard_ops_ = ...
+        if (compare_data_["hard_ops"].compare_func(hard_ops_, compare_data_["hard_ops_"].critical_val)) {
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": hard_ops:" + std::to_string(hard_ops_));
+        }
+        
+        // hard_throughput_ = ...
+        if (compare_data_["hard_throughput"].compare_func(hard_throughput_, compare_data_["hard_throughput_"].critical_val)) {
+            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": hard_throughput:" + std::to_string(hard_throughput_));
+        }
+
         observer_->NotifyResult(this->toString());
     }
 
     std::string AgentMemory::toString() {
-        return "ram_total: " + std::to_string(this->ram_total_) + " | " +
-               "ram: " + std::to_string(this->ram_) + " | " +
-               "hard_volume: " + std::to_string(this->hard_volume_) + " | " +
-               "hard_ops: " + std::to_string(this->hard_ops_) + " | " +
-               "hard_throughput: " + std::to_string(this->hard_throughput_);
+        return "ram_total : " + std::to_string(this->ram_total_) + " | " +
+               "ram : " + std::to_string(this->ram_) + " | " +
+               "hard_volume : " + std::to_string(this->hard_volume_) + " | " +
+               "hard_ops : " + std::to_string(this->hard_ops_) + " | " +
+               "hard_throughput : " + std::to_string(this->hard_throughput_);
     }
 }
