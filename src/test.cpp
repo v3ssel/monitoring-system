@@ -154,12 +154,29 @@
 //     }
 // }
 #include <iostream>
+#include <functional>
 #include <csignal>
 #include <unordered_map>
 #include <thread>
 // #include "core/agents_src/agentCPU.h"
-#include "core/Kernel.h"
+// #include "core/Kernel.h"
 // #include "core/agentsFactory.h"
+#include "core/utils/Comparisons.h"
+
+class Test {
+public:
+    using CmpFunc = std::function<bool(double, double)>;
+
+    void add(std::string name, CmpFunc f) {
+        tests[name] = f;
+    }
+
+    CmpFunc get(std::string name) {
+        return tests[name];
+    }
+
+    std::unordered_map<std::string, CmpFunc> tests;
+};
 
 int main() {
     std::signal(SIGSEGV, [](int) {
@@ -168,11 +185,21 @@ int main() {
     std::atexit([]() {
         std::cout << "success exit\n";
     });
-
+    std::cout << std::boolalpha;
     std::cout << "MAIN" << "\n";
 
-    s21::Kernel k;
-    k.start();
+    Test t;
+    t.add("test1", s21::Comparisons<double>::is_greater);
+    std::function<bool(double, double)> f = t.get("test1");
+
+    // std::function<bool(double, double)> f = s21::Comparisons<double>::is_greater;
+    std::cout << s21::Comparisons<double>::is_greater << "\n";
+    bool(**ptr)(double, double) = f.target<bool(*)(double, double)>();
+    std::cout << (*ptr == s21::Comparisons<double>::is_greater) << "\n";
+
+
+    // s21::Kernel k;
+    // k.start();
     // std::this_thread::sleep_for(std::chrono::seconds(5));
     // std::cout << "DISABLING" << "\n";
     // k.disableAgent("libagentCPU.so");
@@ -186,21 +213,21 @@ int main() {
     // std::this_thread::sleep_for(std::chrono::seconds(600));
     // std::cout << "MAIN WOKEN UP" << "\n";
 
-    while (true) {
-        auto crit = k.takeCriticals();
-        while (crit.size() > 0) {
-            std::cout << crit.front() << "\n";
-            crit.pop();
-        }
+    // while (true) {
+    //     auto crit = k.takeCriticals();
+    //     while (crit.size() > 0) {
+    //         std::cout << crit.front() << "\n";
+    //         crit.pop();
+    //     }
 
-        auto err = k.takeErrors();
-        while (err.size() > 0) {
-            std::cout << "ERROR: " << err.front() << "\n";
-            err.pop();
-        }
+    //     auto err = k.takeErrors();
+    //     while (err.size() > 0) {
+    //         std::cout << "ERROR: " << err.front() << "\n";
+    //         err.pop();
+    //     }
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-    }
+    //     std::this_thread::sleep_for(std::chrono::seconds(2));
+    // }
 
     return 0;
 }

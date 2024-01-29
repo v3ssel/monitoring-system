@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+
 #include "../interfaces/SearcherObserver.h"
 #include "../agents/Agent.h"
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <memory>
+
 #include "../interfaces/AgentsObserver.h"
 #include "../interfaces/ConfigReader.h"
 #include "../utils/CompareType.h"

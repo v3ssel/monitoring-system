@@ -1,6 +1,3 @@
-#include "monitoringsystemwindow.h"
-#include "./ui_monitoringsystemwindow.h"
-
 #include <QGraphicsOpacityEffect>
 #include <QFileDialog>
 #include <QDir>
@@ -9,6 +6,9 @@
 #include <QLineEdit>
 #include "../controller/KernelController.h"
 #include "../core/agents/AgentConfigWriter.h"
+
+#include "monitoringsystemwindow.h"
+#include "./ui_monitoringsystemwindow.h"
 
 namespace s21 {
 MonitoringSystemWindow::MonitoringSystemWindow(QWidget *parent)

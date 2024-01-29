@@ -1,6 +1,5 @@
-#include "monitoringsystemwindow.h"
-
 #include <QApplication>
+#include "monitoringsystemwindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);

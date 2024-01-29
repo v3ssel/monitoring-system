@@ -1,9 +1,10 @@
-#include "kernel.h"
 #include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+
 #include "workers/ConsoleLogger.h"
+#include "kernel.h"
 
 namespace s21 {
 

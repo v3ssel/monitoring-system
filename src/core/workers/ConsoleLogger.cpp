@@ -1,6 +1,7 @@
-#include "ConsoleLogger.h"
 #include <sstream>
 #include <iostream>
+
+#include "ConsoleLogger.h"
 
 namespace s21 {
     void ConsoleLogger::Log(const std::string &message, LogLevel lvl) {
