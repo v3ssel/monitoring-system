@@ -37,6 +37,18 @@ namespace s21 {
         std::queue<std::string> takeCriticals();
         std::queue<std::string> takeErrors();
 
+        void writeParamToConfig(const std::string& filename,
+                                const std::string& param_name,
+                                const std::string& param_value);
+
+        void writeCompareSignToConfig(const std::string& filename,
+                                      const std::string& metric_name,
+                                      const std::string& compare_sign);
+
+        void writeCriticalToConfig(const std::string& filename,
+                                   const std::string& metric_name,
+                                   const std::string& metric_value);
+
        private:
         Kernel* kernel_ = nullptr;
         

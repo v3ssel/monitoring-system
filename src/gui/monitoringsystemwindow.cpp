@@ -8,6 +8,7 @@
 #include <QThread>
 #include <QLineEdit>
 #include "../controller/KernelController.h"
+#include "../core/agents/AgentConfigWriter.h"
 
 namespace s21 {
 MonitoringSystemWindow::MonitoringSystemWindow(QWidget *parent)
@@ -252,37 +253,9 @@ void MonitoringSystemWindow::agentMetricCompareChanged(const QString &str) {
     QLabel* metric_name = metric_cmp_to_name_[cbox];
 
     auto& agent = KernelController::getInstance().getAgentByName(last_clicked_agent_.toStdString());
-    QFile file(configs_directory_ + "/" + QString::fromStdString(agent->config_name));
-    file.open(QFile::OpenModeFlag::ReadOnly);
+    QString filename = configs_directory_ + "/" + QString::fromStdString(agent->config_name);
 
-    QStringList file_contents;
-    bool changed = false;
-    QTextStream ts(&file);
-    while (!ts.atEnd()) {
-        QString line = ts.readLine();
-        if (!changed && line.indexOf(metric_name->text(), 0, Qt::CaseInsensitive) == 0) {
-            size_t value_index = line.toStdString().find_first_of("0123456789", metric_name->text().length());
-            if (value_index != std::string::npos) {
-                QString value = line.sliced(value_index);
-                line = metric_name->text() + str + value;
-            } else {
-                line = metric_name->text() + str;
-            }
-
-            changed = true;
-        }
-        file_contents.push_back(line);
-    }
-    file.close();
-
-    if (!changed) {
-        file_contents.push_back(metric_name->text() + str);
-    }
-
-    file.open(QFile::OpenModeFlag::WriteOnly);
-    for (auto& str : file_contents) {
-        ts << str << "\n";
-    }
+    KernelController::getInstance().writeCompareSignToConfig(filename.toStdString(), metric_name->text().toStdString(), str.toStdString());
 }
 
 void MonitoringSystemWindow::agentMetricCriticalEdited(const QString &str) {
@@ -290,40 +263,10 @@ void MonitoringSystemWindow::agentMetricCriticalEdited(const QString &str) {
     QLabel* metric_name = metric_crit_to_name_[ledit];
 
     auto& agent = KernelController::getInstance().getAgentByName(last_clicked_agent_.toStdString());
-    QFile file(configs_directory_ + "/" + QString::fromStdString(agent->config_name));
-    file.open(QFile::OpenModeFlag::ReadOnly);
+    QString filename = configs_directory_ + "/" + QString::fromStdString(agent->config_name);
 
-    QStringList file_contents;
-    bool changed = false;
-
-    QTextStream ts(&file);
-    while (!ts.atEnd()) {
-        QString line = ts.readLine();
-        if (!changed && line.indexOf(metric_name->text(), 0, Qt::CaseInsensitive) == 0) {
-            qsizetype metric_len = metric_name->text().length();
-            if (metric_len == line.length())
-                continue;
-
-            if (metric_len < line.length() - 1 && !line[metric_len + 1].isDigit()) {
-                line.replace(metric_len + 2, line.length(), str);
-            } else {
-                line.replace(metric_len + 1, line.length(), str);
-            }
-
-            changed = true;
-        }
-        file_contents.push_back(line);
-    }
-    file.close();
-
-    if (!changed) {
-        file_contents.push_back(metric_name->text() + ">" + str);
-    }
-
-    file.open(QFile::OpenModeFlag::WriteOnly);
-    for (auto& str : file_contents) {
-        ts << str << "\n";
-    }
+    AgentConfigWriter::write(filename.toStdString(), metric_name->text().toStdString(), "", str.toStdString());
+    KernelController::getInstance().writeCriticalToConfig(filename.toStdString(), metric_name->text().toStdString(), str.toStdString());
 }
 
 void MonitoringSystemWindow::updateAgentInfo(QListWidgetItem* item) {
@@ -614,31 +557,9 @@ void MonitoringSystemWindow::clearWidget(QWidget* widget) {
 
 void MonitoringSystemWindow::replaceConfigFile(const QString& param, const QString &new_val) {
     auto& agent = KernelController::getInstance().getAgentByName(last_clicked_agent_.toStdString());
-    QFile file(configs_directory_ + "/" + QString::fromStdString(agent->config_name));
-    file.open(QFile::OpenModeFlag::ReadOnly);
+    QString filename = configs_directory_ + "/" + QString::fromStdString(agent->config_name);
 
-    QStringList file_contents;
-    bool changed = false;
-
-    QTextStream ts(&file);
-    while (!ts.atEnd()) {
-        QString line = ts.readLine();
-        if (!changed && line.indexOf(param + ":", 0, Qt::CaseInsensitive) == 0) {
-            line.replace(line.indexOf(':') + 1, line.length(), new_val);
-            changed = true;
-        }
-        file_contents.push_back(line);
-    }
-    file.close();
-
-    if (!changed) {
-        file_contents.push_back(param + ":" + new_val);
-    }
-
-    file.open(QFile::OpenModeFlag::WriteOnly);
-    for (auto& str : file_contents) {
-        ts << str << "\n";
-    }
+    KernelController::getInstance().writeParamToConfig(filename.toStdString(), param.toStdString(), new_val.toStdString());
 }
 
 void MonitoringSystemWindow::clearAll() {
@@ -655,4 +576,3 @@ void MonitoringSystemWindow::clearAll() {
     }
 }
 }
-

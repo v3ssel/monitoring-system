@@ -67,7 +67,6 @@ namespace s21 {
         int skipping_lines_;
 
         QCheckBox* is_active_cb_;
-//        QLineEdit* agent_name_le_, *agent_type_le_;
         QSpinBox* agent_upd_time_sb_;
 
         QAction* stop_writer_act_, *start_writer_act_;
@@ -92,7 +91,6 @@ namespace s21 {
 
         void addAgentIsActiveInfo(QFrame* frame, bool is_active);
         void addAgentConfLines(QFrame* frame, std::shared_ptr<Agent>& ag);
-//        void addAgentTypeInfo(QFrame* frame, std::string& type);
         void addAgentUpdTimeInfo(QFrame* frame, int update_time);
         void addAgentActiveTimeInfo(QFrame* frame, QFont& font, std::string& agent_name);
         void addAgentMetricsInfo(QFrame* frame, QFont& font, std::shared_ptr<Agent>& ag);

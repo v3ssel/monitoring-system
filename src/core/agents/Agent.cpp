@@ -1,8 +1,6 @@
 #include <fstream>
 #include <limits>
 #include "Agent.h"
-#include "../utils/Comparisons.h"
-#include "../utils/CompareType.h"
 
 namespace s21 {
 Agent::Agent() {

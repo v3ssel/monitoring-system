@@ -25,7 +25,7 @@ set(COMMON_SOURCES
     interfaces/AgentsObserver.h
 
     utils/Comparisons.h
-    utils/comparetype.h
+    utils/CompareType.h
 )
 
 if(BUILD_AGENTCPU)
@@ -110,6 +110,9 @@ if(BUILD_KERNEL)
         workers/LogRecordsWriter.cpp
         workers/ConsoleLogger.h
         workers/ConsoleLogger.cpp
+
+        agents/AgentConfigWriter.cpp
+        agents/AgentConfigWriter.h
     )
 
     add_library(MonitoringKernel SHARED

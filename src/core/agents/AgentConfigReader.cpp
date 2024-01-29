@@ -1,8 +1,8 @@
 #include <fstream>
 #include "AgentConfigReader.h"
 #include "Agent.h"
-#include "utils/Comparisons.h"
-#include "utils/CompareType.h"
+#include "../utils/Comparisons.h"
+#include "../utils/CompareType.h"
 
 namespace s21 {
 

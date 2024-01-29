@@ -1,4 +1,5 @@
 #include "KernelController.h"
+#include "../core/agents/AgentConfigWriter.h"
 
 namespace s21 {
     void KernelController::setKernel(Kernel *kernel) {
@@ -71,5 +72,17 @@ namespace s21 {
     
     std::queue<std::string> KernelController::takeErrors() {
         return kernel_->takeErrors();
+    }
+    
+    void KernelController::writeParamToConfig(const std::string &filename, const std::string &param_name, const std::string &param_value) {
+        AgentConfigWriter::write(filename, param_name, ":", param_value);
+    }
+    
+    void KernelController::writeCompareSignToConfig(const std::string &filename, const std::string &metric_name, const std::string &compare_sign) {
+        AgentConfigWriter::write(filename, metric_name, compare_sign, "");
+    }
+    
+    void KernelController::writeCriticalToConfig(const std::string &filename, const std::string &metric_name, const std::string &metric_value) {
+        AgentConfigWriter::write(filename, metric_name, "", metric_value);
     }
 }

@@ -1,6 +1,6 @@
 name:AgentNetwork
 type:NET
-update_time:3
+update_time:5
 url:google.com
 availability==1
-inet_throughput>100
+inet_throughput>1000
