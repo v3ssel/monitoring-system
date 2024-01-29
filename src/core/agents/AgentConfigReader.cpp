@@ -20,20 +20,28 @@ void AgentConfigReader::read(const std::string &path) {
 
     std::string line;
     while (std::getline(conf, line)) {
-        if (line.find("name") == 0) {
-            agent_->name = line.substr(line.find(":") + 1);
-        } else if (line.find("type") == 0) {
-            agent_->type = line.substr(line.find(":") + 1);
-        } else if (line.find("update_time") == 0) {
-            agent_->setUpdateTime(std::stoi(line.substr(line.find(":") + 1)));
-        } else if (line.find(':') != std::string::npos) {
-            size_t index = line.find(':');
-            agent_->additional_params_[line.substr(0, index)] = line.substr(index + 1);
+        size_t index = line.find(':');
+
+        if (index != std::string::npos) {
+            std::string sub = line.substr(0, index);
+
+            if (sub == "name") {
+                agent_->name = line.substr(line.find(":") + 1);
+            } else if (sub == "type") {
+                agent_->type = line.substr(line.find(":") + 1);
+            } else if (sub == "update_time") {
+                agent_->setUpdateTime(std::stoi(line.substr(line.find(":") + 1)));
+            } else {
+                agent_->additional_params_[sub] = line.substr(index + 1);
+            }
         }
         
         for (auto& metric : agent_->metrics_names_) {
-            if (line.find(metric) == 0) {
-                setComparisonsAndCriticals(metric.length(), metric, line);
+            index = line.find_first_of("><!=");
+            if (index == std::string::npos) continue;
+
+            if (line.substr(0, index) == metric) {
+                setComparisonsAndCriticals(index, metric, line);
             }
         }
     }

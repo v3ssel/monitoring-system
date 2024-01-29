@@ -25,21 +25,24 @@ void AgentsSearcher::search() {
 
             std::string new_agent_name = agent.path().filename().string();
 
+            auto readCfg = [&](std::shared_ptr<Agent>& ag) {
+                try {
+                    ag->readConfig(configs_directory_);
+                } catch (std::exception &e) {
+                    observer_->NotifyError("ERROR: AgentsSearcher::search(): " + new_agent_name + "::readConfig(): " + std::string(e.what()));
+                }
+            };
+
             if (agents_.find(new_agent_name) != agents_.end()) {
-                agents_[new_agent_name]->readConfig(configs_directory_);
+                readCfg(agents_[new_agent_name]);
                 continue;
             }
             
             auto created = agents_.emplace(new_agent_name, AgentsFactory::GetInstance().LoadAgent(agent.path().string()));
             if (!created.second)
                 continue;
-                
-            try {
-                created.first->second->readConfig(configs_directory_);
-            } catch (std::exception &e) {
-                observer_->NotifyError("ERROR: AgentsSearcher::search(): " + new_agent_name + "::readConfig(): " + std::string(e.what()));
-            }
 
+            readCfg(created.first->second);
             observer_->NotifyNewAgentLoaded(new_agent_name);
         }
     } catch (std::exception &e) {

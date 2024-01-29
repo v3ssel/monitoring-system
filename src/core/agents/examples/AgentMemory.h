@@ -12,11 +12,11 @@ namespace s21 {
         std::string toString() override;
         
        private:
-        double ram_total;
-        double ram;
-        double hard_volume;
-        int    hard_ops;
-        double hard_throughput;
+        double ram_total_;
+        double ram_;
+        double hard_volume_;
+        int    hard_ops_;
+        double hard_throughput_;
     };
 }
 

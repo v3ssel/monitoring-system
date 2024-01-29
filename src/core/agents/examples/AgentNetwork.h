@@ -5,16 +5,15 @@
 
 namespace s21 {
     class AgentNetwork : public Agent {
-    public:
+       public:
         AgentNetwork();
 
         void updateMetrics () override;
         std::string toString() override;
         
-    private:
-        std::string url;
-        int availability;
-        double inet_throughput;
+       private:
+        int availability_;
+        double inet_throughput_;
     };
 }
 

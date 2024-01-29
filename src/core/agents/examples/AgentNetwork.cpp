@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "AgentNetwork.h"
+#include "../AgentConfigReader.h"
 // #include "CommandCaller.h"
 // #include <sys/sysctl.h>
 
@@ -12,13 +13,17 @@ namespace s21 {
     }
 
     AgentNetwork::AgentNetwork() : Agent() {
-        is_active = true;
-        availability = 0;
-        inet_throughput = 100;
+        additional_params_["url"] = "1.1.1.1";
+        availability_ = 0;
+        inet_throughput_ = 100;
 
+        Agent::config_reader_ = std::make_unique<AgentConfigReader>(this);
         Agent::name = "AgentNetwork";
         Agent::type = "NET";
         Agent::config_name = ".conf" + Agent::type;
+
+        Agent::metrics_names_.push_back("availability");
+        Agent::metrics_names_.push_back("inet_throughput");
     }
 
     void AgentNetwork::updateMetrics() {
@@ -33,7 +38,7 @@ namespace s21 {
     };
 
     std::string AgentNetwork::toString() {
-        return "<url> : " + std::to_string(this->availability) + " | inet_throughput : " + std::to_string(this->inet_throughput);
+        return "<url> : " + std::to_string(this->availability_) + " | inet_throughput : " + std::to_string(this->inet_throughput_);
     };
 }
 // netstat -I en0 -b 5 | head -n 3

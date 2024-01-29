@@ -1,4 +1,5 @@
 #include "AgentExtra.h"
+#include "../AgentConfigReader.h"
 
 namespace s21 {
     extern "C" AgentExtra* create_obj() {
@@ -21,6 +22,7 @@ namespace s21 {
         system_errors_ = 0;
         user_auths_ = 0;
 
+        Agent::config_reader_ = std::make_unique<AgentConfigReader>(this);
         Agent::name = "AgentExtra";
         Agent::type = "EXT";
         Agent::config_name = ".conf" + Agent::type;
