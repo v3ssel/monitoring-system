@@ -50,8 +50,7 @@ namespace s21 {
         void stopAgentsSearcher();
 
         void isActiveCheckboxClicked(bool checked);
-        void agentNameLineEditEdited();
-        void agentTypeLineEditEdited();
+        void agentConfLineEdited();
         void agentUpdateTimeChanged(int new_val);
         void agentMetricCompareChanged(const QString& str);
         void agentMetricCriticalEdited(const QString& str);
@@ -68,13 +67,14 @@ namespace s21 {
         int skipping_lines_;
 
         QCheckBox* is_active_cb_;
-        QLineEdit* agent_name_le_, *agent_type_le_;
+//        QLineEdit* agent_name_le_, *agent_type_le_;
         QSpinBox* agent_upd_time_sb_;
 
         QAction* stop_writer_act_, *start_writer_act_;
         QAction* stop_searcher_act_, *start_searcher_act_;
         QAction* stop_kernel_act_;
 
+        QHash<QLineEdit*, QLabel*> agent_confdata_to_name_;
         QHash<QLineEdit*, QLabel*> metric_crit_to_name_;
         QHash<QComboBox*, QLabel*> metric_cmp_to_name_;
 
@@ -91,8 +91,8 @@ namespace s21 {
         void clearAll();
 
         void addAgentIsActiveInfo(QFrame* frame, bool is_active);
-        void addAgentNameInfo(QFrame* frame, std::string& name);
-        void addAgentTypeInfo(QFrame* frame, std::string& type);
+        void addAgentConfLines(QFrame* frame, std::shared_ptr<Agent>& ag);
+//        void addAgentTypeInfo(QFrame* frame, std::string& type);
         void addAgentUpdTimeInfo(QFrame* frame, int update_time);
         void addAgentActiveTimeInfo(QFrame* frame, QFont& font, std::string& agent_name);
         void addAgentMetricsInfo(QFrame* frame, QFont& font, std::shared_ptr<Agent>& ag);

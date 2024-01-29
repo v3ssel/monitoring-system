@@ -232,12 +232,15 @@ void MonitoringSystemWindow::isActiveCheckboxClicked(bool checked) {
     }
 }
 
-void MonitoringSystemWindow::agentNameLineEditEdited() {
-    replaceConfigFile("name", agent_name_le_->text());
-}
+void MonitoringSystemWindow::agentConfLineEdited() {
+    QLineEdit* param_value = qobject_cast<QLineEdit*>(sender());
+    QLabel* param_name = agent_confdata_to_name_[param_value];
 
-void MonitoringSystemWindow::agentTypeLineEditEdited() {
-    replaceConfigFile("type", agent_type_le_->text());
+    QString pname_qstr = param_name->text();
+    pname_qstr.front() = pname_qstr.front().toLower();
+    pname_qstr.chop(1);
+
+    replaceConfigFile(pname_qstr, param_value->text());
 }
 
 void MonitoringSystemWindow::agentUpdateTimeChanged(int new_val) {
@@ -338,8 +341,7 @@ void MonitoringSystemWindow::updateAgentInfo(QListWidgetItem* item) {
     font.setPointSize(10);
 
     addAgentIsActiveInfo(frame, ag->is_active);
-    addAgentNameInfo(frame, ag->name);
-    addAgentTypeInfo(frame, ag->type);
+    addAgentConfLines(frame, ag);
     addAgentUpdTimeInfo(frame, ag->getUpdateTime());
     addAgentActiveTimeInfo(frame, font, agent);
     addAgentMetricsInfo(frame, font, ag);
@@ -363,32 +365,38 @@ void MonitoringSystemWindow::addAgentIsActiveInfo(QFrame *frame, bool is_active)
     connect(is_active_cb_, &QCheckBox::clicked, this, &MonitoringSystemWindow::isActiveCheckboxClicked);
 }
 
-void MonitoringSystemWindow::addAgentNameInfo(QFrame *frame, std::string& name) {
-    QWidget* widget = new QWidget(frame);
-    QHBoxLayout* hbox = new QHBoxLayout(widget);
+void MonitoringSystemWindow::addAgentConfLines(QFrame *frame, std::shared_ptr<Agent>& ag) {
+    QWidget* widget = nullptr;
+    QHBoxLayout* hbox = nullptr;
 
     QLabel* label = new QLabel("Name:", widget);
-    agent_name_le_ = new QLineEdit(QString::fromStdString(name), widget);
+    QLineEdit* conf_le = new QLineEdit(QString::fromStdString(ag->name), widget);
 
-    hbox->addWidget(label, 0, Qt::AlignmentFlag::AlignLeft);
-    hbox->addWidget(agent_name_le_, 0, Qt::AlignmentFlag::AlignRight);
-    frame->layout()->addWidget(widget);
+    auto addWidget = [&]() {
+        widget = new QWidget(frame);
+        hbox = new QHBoxLayout(widget);
 
-    connect(agent_name_le_, &QLineEdit::editingFinished, this, &MonitoringSystemWindow::agentNameLineEditEdited);
-}
+        hbox->addWidget(label, 0, Qt::AlignmentFlag::AlignLeft);
+        hbox->addWidget(conf_le, 0, Qt::AlignmentFlag::AlignRight);
+        frame->layout()->addWidget(widget);
 
-void MonitoringSystemWindow::addAgentTypeInfo(QFrame *frame, std::string &type) {
-    QWidget* widget = new QWidget(frame);
-    QHBoxLayout* hbox = new QHBoxLayout(widget);
+        connect(conf_le, &QLineEdit::editingFinished, this, &MonitoringSystemWindow::agentConfLineEdited);
+        agent_confdata_to_name_[conf_le] = label;
+    };
+    addWidget();
 
-    QLabel* label = new QLabel("Type:", widget);
-    agent_type_le_ = new QLineEdit(QString::fromStdString(type), widget);
+    label = new QLabel("Type:", widget);
+    conf_le = new QLineEdit(QString::fromStdString(ag->type), widget);
+    addWidget();
 
-    hbox->addWidget(label, 0, Qt::AlignmentFlag::AlignLeft);
-    hbox->addWidget(agent_type_le_, 0, Qt::AlignmentFlag::AlignRight);
-    frame->layout()->addWidget(widget);
+    for (auto& [param_name, value] : ag->additional_params_) {
+        QString pname_qstr = QString::fromStdString(param_name) + ":";
+        pname_qstr.front() = pname_qstr.front().toUpper();
 
-    connect(agent_type_le_, &QLineEdit::editingFinished, this, &MonitoringSystemWindow::agentTypeLineEditEdited);
+        label = new QLabel(pname_qstr, widget);
+        conf_le = new QLineEdit(QString::fromStdString(value), widget);
+        addWidget();
+    }
 }
 
 void MonitoringSystemWindow::addAgentUpdTimeInfo(QFrame *frame, int update_time) {
@@ -495,8 +503,6 @@ void MonitoringSystemWindow::setupWindow() {
     skipping_lines_ = 0;
 
     is_active_cb_ = nullptr;
-    agent_name_le_ = nullptr;
-    agent_type_le_ = nullptr;
     agent_upd_time_sb_ = nullptr;
     fs_watcher_ = nullptr;
 }
@@ -507,7 +513,6 @@ void MonitoringSystemWindow::setupFilewatcher() {
 
     fs_watcher_ = new QFileSystemWatcher(this);
     fs_watcher_->addPath(logs_directory_ + "/" + datestr_ + ".txt");
-    qDebug() << "FSW: " << logs_directory_ + "/" + datestr_ + ".txt";
 
     connect(fs_watcher_, &QFileSystemWatcher::fileChanged, this, &MonitoringSystemWindow::updateLogsList);
 }
@@ -593,9 +598,8 @@ int MonitoringSystemWindow::parseCompareFnc(CompareType type) {
 
 void MonitoringSystemWindow::clearWidget(QWidget* widget) {
     disconnect(is_active_cb_);
-    disconnect(agent_name_le_);
-    disconnect(agent_type_le_);
     disconnect(agent_upd_time_sb_);
+    agent_confdata_to_name_.clear();
     metric_cmp_to_name_.clear();
     metric_crit_to_name_.clear();
 
