@@ -81,8 +81,9 @@ namespace s21 {
         void fadeIn(QWidget* widget, int msec);
 
         void setupWindow();
-        void setupFilewatcher();
         void setupActions();
+        void setupFilewatcher();
+        void reloadFilewatcher();
         QComboBox* getComparesComboBox();
         int parseCompareFnc(CompareType fnc);
         void clearWidget(QWidget* widget);

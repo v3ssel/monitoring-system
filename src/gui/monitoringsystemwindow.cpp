@@ -103,6 +103,9 @@ void MonitoringSystemWindow::updateAgentsList() {
 
 void MonitoringSystemWindow::updateLogsList(const QString str) {
     QFile f(str);
+    if (!f.exists()) {
+        reloadFilewatcher();
+    }
     f.open(QFile::OpenModeFlag::ReadOnly);
 
     char ch;
@@ -129,10 +132,7 @@ void MonitoringSystemWindow::updateLogsList(const QString str) {
     skipping_lines_ = line_cnt;
 
     if (datestr_ != QDateTime::currentDateTime().toString(dateformat_)) {
-        delete fs_watcher_;
-        fs_watcher_ = nullptr;
-        skipping_lines_ = 0;
-        setupFilewatcher();
+        reloadFilewatcher();
     }
 }
 
@@ -190,11 +190,7 @@ void MonitoringSystemWindow::changeLogsDirectory() {
     logs_directory_ = new_dir;
 
     KernelController::getInstance().changeLogsDirectory(logs_directory_.toStdString());
-
-    delete fs_watcher_;
-    fs_watcher_ = nullptr;
-    skipping_lines_ = 0;
-    setupFilewatcher();
+    reloadFilewatcher();
 }
 
 void MonitoringSystemWindow::startLogsWriter() {
@@ -453,11 +449,25 @@ void MonitoringSystemWindow::setupWindow() {
 void MonitoringSystemWindow::setupFilewatcher() {
     QDateTime date = QDateTime::currentDateTime();
     datestr_ = date.toString(dateformat_);
+    QString log_file = logs_directory_ + "/" + datestr_ + ".txt";
+
+    QFile file(log_file, this);
+    if (!file.exists()) {
+        file.open(QFile::OpenModeFlag::ReadWrite);
+        file.close();
+    }
 
     fs_watcher_ = new QFileSystemWatcher(this);
-    fs_watcher_->addPath(logs_directory_ + "/" + datestr_ + ".txt");
+    fs_watcher_->addPath(log_file);
 
     connect(fs_watcher_, &QFileSystemWatcher::fileChanged, this, &MonitoringSystemWindow::updateLogsList);
+}
+
+void MonitoringSystemWindow::reloadFilewatcher() {
+    delete fs_watcher_;
+    fs_watcher_ = nullptr;
+    skipping_lines_ = 0;
+    setupFilewatcher();
 }
 
 void MonitoringSystemWindow::setupActions() {
