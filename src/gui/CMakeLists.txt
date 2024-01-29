@@ -14,9 +14,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        monitoringsystemwindow.cpp
-        monitoringsystemwindow.h
-        monitoringsystemwindow.ui
+        MonitoringSystemWindow.cpp
+        MonitoringSystemWindow.h
+        MonitoringSystemWindow.ui
         ../controller/KernelController.cpp
         ../controller/KernelController.h
 )
