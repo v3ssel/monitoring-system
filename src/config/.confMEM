@@ -1,8 +1,8 @@
 name:AgentMemory
 type:MEM
 update_time:5
-ram_total==0
-ram==0
-hard_volume==0
-hard_ops==0
-hard_throughput==0
+ram_total==15000
+ram==15000
+hard_volume==15000
+hard_ops==15000
+hard_throughput==15000
