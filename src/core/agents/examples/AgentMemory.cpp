@@ -1,3 +1,5 @@
+#include <limits>
+
 #include "AgentMemory.h"
 #include "../AgentConfigReader.h"
 #include "../../utils/Comparisons.h"

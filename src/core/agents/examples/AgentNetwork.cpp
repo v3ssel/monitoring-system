@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <limits>
 
 #include "AgentNetwork.h"
 #include "../AgentConfigReader.h"
