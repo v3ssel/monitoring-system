@@ -24,7 +24,7 @@ set(PROJECT_SOURCES
         ../controller/KernelController.h
 )
 
-set(BUILD_KERNEL ON)
+set(BUILD_MSKERNEL ON)
 add_subdirectory(../core ${CMAKE_BINARY_DIR}/core)
 add_subdirectory(../notifications ${CMAKE_BINARY_DIR}/notifications)
 

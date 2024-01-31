@@ -10,7 +10,7 @@ option(BUILD_AGENTCPU     OFF)
 option(BUILD_AGENTMEMORY  OFF)
 option(BUILD_AGENTNETWORK OFF)
 option(BUILD_AGENTEXTRA   OFF)
-option(BUILD_KERNEL       OFF)
+option(BUILD_MSKERNEL     OFF)
 
 set(COMMON_SOURCES
     agents/Agent.h
@@ -92,7 +92,7 @@ if(BUILD_AGENTEXTRA)
     )
 endif()
 
-if(BUILD_KERNEL)
+if(BUILD_MSKERNEL)
     set(KERNEL_SOURCES
         ${COMMON_SOURCES}
         Kernel.h
