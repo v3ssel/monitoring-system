@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QChar>
 #include <QThread>
+#include <QtConcurrent/QtConcurrent>
 #include <QLineEdit>
 #include "../controller/KernelController.h"
 #include "../core/agents/AgentConfigWriter.h"
@@ -171,11 +172,17 @@ void MonitoringSystemWindow::updateCriticalsList() {
         }
 
         if (crits_vec.size() >= nt_set_->batch_size) {
-            if (nt_set_->tg_enabled)
-                KernelController::getInstance().sendNotificationToTelegram(nt_set_->tg_id.toStdString(), crits_vec);
+            if (nt_set_->tg_enabled) {
+                QFuture<void> f = QtConcurrent::run([crits_vec, tg_id = nt_set_->tg_id.toStdString()]() {
+                    KernelController::getInstance().sendNotificationToTelegram(tg_id, crits_vec);
+                });
+            }
 
-            if (nt_set_->email_enabled)
-                KernelController::getInstance().sendNotificationToEmail(nt_set_->email_address.toStdString(), crits_vec);
+            if (nt_set_->email_enabled) {
+                QFuture<void> f = QtConcurrent::run([crits_vec, email_address = nt_set_->email_address.toStdString()]() {
+                    KernelController::getInstance().sendNotificationToEmail(email_address, crits_vec);
+                });
+            }
 
             crits_vec.clear();
         }
