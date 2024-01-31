@@ -19,7 +19,7 @@ void CriticalNotificationTelegram::sendNotification(const std::string &receiver,
         query.append(encoded_msg);
     }
 
-    std::string command = "curl -s -d \"" + query + "\" " + url;
+    std::string command = "curl --silent --data \"" + query + "\" " + url;
 
     std::system(command.c_str());
 }
@@ -43,4 +43,3 @@ std::string CriticalNotificationTelegram::urlEncode(const std::string &str) cons
     return encoded.str();
 }
 }
-// 430803020
