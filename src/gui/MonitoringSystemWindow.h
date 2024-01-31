@@ -10,6 +10,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QLabel>
+#include "NotificationSettings.h"
 #include "../core/utils/CompareType.h"
 
 QT_BEGIN_NAMESPACE
@@ -55,8 +56,11 @@ namespace s21 {
         void agentMetricCompareChanged(const QString& str);
         void agentMetricCriticalEdited(const QString& str);
 
+        void showNotificationSettingsDialog();
+
        private:
         Ui::MonitoringSystemWindow *ui;
+        NotificationSettings* nt_set_;
 
         QString datestr_, dateformat_, last_clicked_agent_;
         QString agents_directory_, configs_directory_, logs_directory_;
@@ -72,6 +76,7 @@ namespace s21 {
         QAction* stop_writer_act_, *start_writer_act_;
         QAction* stop_searcher_act_, *start_searcher_act_;
         QAction* stop_kernel_act_;
+        QAction* enable_notifications_;
 
         QHash<QLineEdit*, QLabel*> agent_confdata_to_name_;
         QHash<QLineEdit*, QLabel*> metric_crit_to_name_;

@@ -2,12 +2,23 @@
 #include "../core/agents/AgentConfigWriter.h"
 
 namespace s21 {
-    void KernelController::setKernel(Kernel *kernel) {
+KernelController::~KernelController() {
+    deleteKernel();
+    if (notifier_) {
+        delete notifier_;
+        notifier_ = nullptr;
+    }
+}
+
+void KernelController::setKernel(Kernel *kernel) {
         kernel_ = kernel;
     }
 
     void KernelController::deleteKernel() {
-        if (kernel_) delete kernel_;
+        if (kernel_) {
+            delete kernel_;
+            kernel_ = nullptr;
+        }
     }
 
     std::shared_ptr<Agent> &KernelController::getAgentByName(const std::string &agent_name) {
@@ -84,5 +95,31 @@ namespace s21 {
     
     void KernelController::writeCriticalToConfig(const std::string &filename, const std::string &metric_name, const std::string &metric_value) {
         AgentConfigWriter::write(filename, metric_name, "", metric_value);
+    }
+
+    void KernelController::sendNotificationToTelegram(const std::string &receiver, const std::vector<std::string> &msgs) {
+        if (!notifier_) {
+            notifier_ = new Notifier();
+        }
+        notification_strategy_ = new CriticalNotificationTelegram();
+
+        notifier_->setNotification(notification_strategy_);
+        notifier_->sendNotification(receiver, msgs);
+
+        delete notification_strategy_;
+        notification_strategy_ = nullptr;
+    }
+
+    void KernelController::sendNotificationToEmail(const std::string &receiver, const std::vector<std::string> &msgs) {
+        if (!notifier_) {
+            notifier_ = new Notifier();
+        }
+        notification_strategy_ = new CriticalNotificationEmail();
+
+        notifier_->setNotification(notification_strategy_);
+        notifier_->sendNotification(receiver, msgs);
+
+        delete notification_strategy_;
+        notification_strategy_ = nullptr;
     }
 }

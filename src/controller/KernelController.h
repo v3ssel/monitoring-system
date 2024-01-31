@@ -2,6 +2,9 @@
 #define _KERNELCONTROLLER_H_
 
 #include "../core/Kernel.h"
+#include "../notifications/CriticalNotificationEmail.h"
+#include "../notifications/CriticalNotificationTelegram.h"
+#include "../notifications/Notifier.h"
 
 namespace s21 {
     class KernelController {
@@ -10,7 +13,8 @@ namespace s21 {
             static KernelController instance;
             return instance;
         }
-       
+        ~KernelController();
+
         void setKernel(Kernel* kernel);
         void deleteKernel();
 
@@ -49,8 +53,14 @@ namespace s21 {
                                    const std::string& metric_name,
                                    const std::string& metric_value);
 
+        void sendNotificationToTelegram(const std::string& receiver, const std::vector<std::string>& msgs);
+        void sendNotificationToEmail(const std::string& receiver, const std::vector<std::string>& msgs);
+
        private:
         Kernel* kernel_ = nullptr;
+
+        Notifier* notifier_ = nullptr;
+        CriticalNotification* notification_strategy_ = nullptr;
         
         KernelController() = default;
         KernelController(const KernelController&) = delete;

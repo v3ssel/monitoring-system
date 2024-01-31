@@ -8,11 +8,11 @@
 namespace s21 {
     class Notifier {
        public:
-        void setNotification(std::unique_ptr<CriticalNotification>& notification);
+        void setNotification(CriticalNotification* notification);
         void sendNotification(const std::string& receiver, const std::vector<std::string>& msgs);
 
        private:
-        std::unique_ptr<CriticalNotification> notification_;
+        CriticalNotification* notification_ = nullptr;
     };
 } // namespace s21
 

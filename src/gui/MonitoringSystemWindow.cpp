@@ -14,6 +14,7 @@ namespace s21 {
 MonitoringSystemWindow::MonitoringSystemWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MonitoringSystemWindow) {
+    nt_set_ = new NotificationSettings(this);
     ui->setupUi(this);
 
     this->setWindowTitle("Monitoring System");
@@ -139,10 +140,14 @@ void MonitoringSystemWindow::updateLogsList(const QString str) {
 void MonitoringSystemWindow::updateErrorsList() {
     while (true) {
         std::queue<std::string> errs = KernelController::getInstance().takeErrors();
+        std::vector<std::string> errors_vec;
+        errors_vec.reserve(errs.size());
+
         while (!errs.empty()) {
             if (!ui) return;
 
             ui->errors_listWidget->insertItem(0, QString::fromStdString(errs.front()));
+            errors_vec.push_back(errs.front());
             errs.pop();
         }
 
@@ -151,13 +156,28 @@ void MonitoringSystemWindow::updateErrorsList() {
 }
 
 void MonitoringSystemWindow::updateCriticalsList() {
+    std::vector<std::string> crits_vec;
+    crits_vec.reserve(nt_set_->batch_size);
+
     while (true) {
         std::queue<std::string> crits = KernelController::getInstance().takeCriticals();
+
         while (!crits.empty()) {
             if (!ui) return;
 
             ui->criticals_listWidget->insertItem(0, QString::fromStdString(crits.front()));
+            crits_vec.push_back(crits.front());
             crits.pop();
+        }
+
+        if (crits_vec.size() >= nt_set_->batch_size) {
+            if (nt_set_->tg_enabled)
+                KernelController::getInstance().sendNotificationToTelegram(nt_set_->tg_id.toStdString(), crits_vec);
+
+            if (nt_set_->email_enabled)
+                KernelController::getInstance().sendNotificationToEmail(nt_set_->email_address.toStdString(), crits_vec);
+
+            crits_vec.clear();
         }
 
         QThread::sleep(1);
@@ -263,6 +283,10 @@ void MonitoringSystemWindow::agentMetricCriticalEdited(const QString &str) {
 
     AgentConfigWriter::write(filename.toStdString(), metric_name->text().toStdString(), "", str.toStdString());
     KernelController::getInstance().writeCriticalToConfig(filename.toStdString(), metric_name->text().toStdString(), str.toStdString());
+}
+
+void MonitoringSystemWindow::showNotificationSettingsDialog() {
+    nt_set_->show();
 }
 
 void MonitoringSystemWindow::updateAgentInfo(QListWidgetItem* item) {
@@ -477,7 +501,9 @@ void MonitoringSystemWindow::setupActions() {
 
     QAction* clear_crits_action = new QAction("Clear critical values.", this);
     connect(clear_crits_action, &QAction::triggered, this, &MonitoringSystemWindow::clearCriticalsList);
-    ui->criticals_listWidget->addAction(clear_crits_action);
+    enable_notifications_ = new QAction("Open notification settings.", this);
+    connect(enable_notifications_, &QAction::triggered, this, &MonitoringSystemWindow::showNotificationSettingsDialog);
+    ui->criticals_listWidget->addActions({clear_crits_action, enable_notifications_});
 
     QAction* change_srch_dir_act = new QAction("Change search directory.", this);
     QAction* change_conf_dir_act = new QAction("Change configs directory.", this);
