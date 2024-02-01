@@ -9,8 +9,7 @@ namespace s21 {
        public:
         virtual ~AgentsObserver() = default;
         virtual void NotifyResult(const std::string& message) = 0;
-        // need experiments with Args...
-        virtual void NotifyCritical(const std::string& message) = 0;
+        virtual void NotifyCritical(const std::string& agent_name, const std::string& metric_name, const std::string& metric_value) = 0;
     };
 }
 

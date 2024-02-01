@@ -20,7 +20,6 @@ namespace s21 {
 
     class Agent {
        public:
-
         bool is_active;
         bool is_update_time_changed;
         std::string name;
@@ -54,9 +53,6 @@ namespace s21 {
 
         AgentsObserver* observer_;
         std::unique_ptr<ConfigReader> config_reader_;
-
-        // std::unordered_map<std::string, CmpFunc> comparisons_;
-        // std::unordered_map<std::string, double> critical_values_;
 
         std::unordered_map<std::string, AgentData> compare_data_;
     };

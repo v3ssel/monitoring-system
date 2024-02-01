@@ -41,12 +41,12 @@ namespace s21 {
         
         // availability_ = ...
         if (compare_data_["availability"].compare_func(availability_, compare_data_["availability"].critical_val)) {
-            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": availability:" + std::to_string(availability_));
+            Agent::observer_->NotifyCritical(this->name, "availability", std::to_string(availability_));
         }
 
         // inet_throughput_ = ...
         if (compare_data_["inet_throughput"].compare_func(inet_throughput_, compare_data_["inet_throughput"].critical_val)) {
-            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": inet_throughput:" + std::to_string(inet_throughput_));
+            Agent::observer_->NotifyCritical(this->name, "inet_throughput", std::to_string(inet_throughput_));
         }
 
         observer_->NotifyResult(this->toString());

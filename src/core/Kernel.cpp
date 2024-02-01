@@ -206,11 +206,12 @@ void Kernel::NotifyResult(const std::string& result) {
     qmetrics_.push(result);
 }
 
-void Kernel::NotifyCritical(const std::string& text) {
-    logger_->Log("Critical value added: \"" + text + "\".", LogLevel::WARNING);
+void Kernel::NotifyCritical(const std::string& agent_name, const std::string& metric_name, const std::string& metric_value) {
+    std::string crit = "CRITICAL | " + agent_name + ": " + metric_name + " == " + metric_value;
+    logger_->Log("Critical value added: \"" + crit + "\".", LogLevel::WARNING);
 
     std::lock_guard<std::mutex> lock(qcritical_values_mtx_);
-    qcritical_values_.push(text);
+    qcritical_values_.push(crit);
 }
 
 void Kernel::NotifyError(const std::string& error) {

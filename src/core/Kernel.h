@@ -50,7 +50,7 @@ namespace s21 {
         void changeLogsDirectory(const std::string& new_directory);
 
         void NotifyResult(const std::string& result) override;
-        void NotifyCritical(const std::string& text) override;
+        void NotifyCritical(const std::string& agent_name, const std::string& metric_name, const std::string& metric_value) override;
         void NotifyError(const std::string& error) override;
 
         std::queue<std::string> takeCriticals();

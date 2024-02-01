@@ -51,7 +51,7 @@ namespace s21 {
         cpu_ = d(gen);
 
         if (compare_data_["cpu"].compare_func(cpu_, compare_data_["cpu"].critical_val)) {
-            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": cpu:" + std::to_string(cpu_));
+            Agent::observer_->NotifyCritical(this->name, "cpu", std::to_string(cpu_));
         }
 
         // command = "top -l 1 | awk ' /^Processes:/{print $2}'";
@@ -59,7 +59,7 @@ namespace s21 {
         processes_ = d(gen);
 
         if (compare_data_["processes"].compare_func(processes_, compare_data_["processes"].critical_val)) {
-            Agent::observer_->NotifyCritical("CRITICAL: " + this->name + ": processes:" + std::to_string(processes_));
+            Agent::observer_->NotifyCritical(this->name, "processes", std::to_string(processes_));
         }
         
         Agent::observer_->NotifyResult(this->toString());
