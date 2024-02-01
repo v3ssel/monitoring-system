@@ -177,10 +177,11 @@ QListWidget::item:selected {
 	color: rgb(208, 208, 208);
 }
 
-
 QSplitter::handle {
 	background: rgb(6, 8, 10);
-}</string>
+}
+
+</string>
           </property>
           <property name="title">
            <string/>
@@ -304,6 +305,9 @@ QSplitter::handle {
                <property name="focusPolicy">
                 <enum>Qt::ClickFocus</enum>
                </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
                <property name="styleSheet">
                 <string notr="true">QFrame {
 	background-color: rgb(46, 47, 48);
@@ -311,6 +315,10 @@ QSplitter::handle {
 
 QLabel {
 	color: rgb(208, 208, 208);
+}
+
+QComboBox QAbstractItemView {
+        background-color: white;
 }</string>
                </property>
                <property name="frameShape">
