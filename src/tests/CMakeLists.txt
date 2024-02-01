@@ -12,11 +12,13 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_definitions(-DGTEST_LANGUAGE_CXX17)
 
 add_subdirectory(../core ${CMAKE_BINARY_DIR}/core)
+add_subdirectory(../notifications ${CMAKE_BINARY_DIR}/notifications)
 
 add_executable(${PROJECT_NAME}
     main_tests.cpp
     Constants.h
     KernelTests.cpp
+    NotififcationTests.cpp
     AgentsSearcherTests.cpp
     AgentsFactoryTests.cpp
     AgentConfigReaderTests.cpp
@@ -29,6 +31,7 @@ target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIBRARIES}
     ${GTEST_MAIN_LIBRARIES}
     MonitoringKernel
+    MonitoringNotifications
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
