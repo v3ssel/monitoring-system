@@ -359,7 +359,7 @@ void MonitoringSystemWindow::addAgentConfLines(QFrame *frame, std::shared_ptr<Ag
     conf_le = new QLineEdit(QString::fromStdString(ag->type), widget);
     addWidget();
 
-    for (auto& [param_name, value] : ag->additional_params_) {
+    for (auto& [param_name, value] : ag->additional_params) {
         QString pname_qstr = QString::fromStdString(param_name) + ":";
         pname_qstr.front() = pname_qstr.front().toUpper();
 
@@ -412,7 +412,7 @@ void MonitoringSystemWindow::addAgentMetricsInfo(QFrame *frame, QFont& font, std
     hbox->addWidget(label, 0, Qt::AlignmentFlag::AlignCenter);
     frame->layout()->addWidget(widget);
 
-    for (auto& metric : ag->metrics_names_) {
+    for (auto& metric : ag->metrics_names) {
         widget = new QWidget(frame);
         hbox = new QHBoxLayout(widget);
 

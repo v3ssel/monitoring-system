@@ -1,0 +1,10 @@
+name:AgentTest
+type:TST
+update_time:10
+additional:some text
+gt>10
+gteq>=15
+lt<20
+lteq<=25
+eq==30
+neq!=35.000000

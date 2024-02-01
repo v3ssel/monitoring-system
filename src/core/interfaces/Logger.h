@@ -13,6 +13,7 @@ namespace s21 {
     class Logger {
        public:
         virtual ~Logger() = default;
+        virtual void setEnabled(bool) = 0;
         virtual void Log(const std::string& message, LogLevel lvl) = 0;
     };
 }

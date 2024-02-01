@@ -15,8 +15,14 @@ add_subdirectory(../core ${CMAKE_BINARY_DIR}/core)
 
 add_executable(${PROJECT_NAME}
     main_tests.cpp
+    Constants.h
+    KernelTests.cpp
     AgentsSearcherTests.cpp
+    AgentsFactoryTests.cpp
+    AgentConfigReaderTests.cpp
+    AgentConfigWriterTests.cpp
     LogRecordsWriterTests.cpp
+    ConsoleLoggerTests.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

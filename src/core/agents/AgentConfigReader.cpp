@@ -33,11 +33,11 @@ void AgentConfigReader::read(const std::string &path) {
             } else if (sub == "update_time") {
                 agent_->setUpdateTime(std::stoi(line.substr(line.find(":") + 1)));
             } else {
-                agent_->additional_params_[sub] = line.substr(index + 1);
+                agent_->additional_params[sub] = line.substr(index + 1);
             }
         }
         
-        for (auto& metric : agent_->metrics_names_) {
+        for (auto& metric : agent_->metrics_names) {
             index = line.find_first_of("><!=");
             if (index == std::string::npos) continue;
 

@@ -4,12 +4,18 @@
 #include "ConsoleLogger.h"
 
 namespace s21 {
-    void ConsoleLogger::Log(const std::string &message, LogLevel lvl) {
-        std::string slvl = parseLevel(lvl);
-        std::stringstream ss;
-        ss << slvl << ": " << message << "\n";
+    void ConsoleLogger::setEnabled(bool enabled) {
+        enabled_ = enabled;
+    }
 
-        std::cout << ss.str();
+    void ConsoleLogger::Log(const std::string &message, LogLevel lvl) {
+        if (enabled_) {
+            std::string slvl = parseLevel(lvl);
+            std::stringstream ss;
+            ss << slvl << ": " << message << "\n";
+
+            std::cout << ss.str();
+        }
     }
     
     std::string ConsoleLogger::parseLevel(LogLevel lvl) {

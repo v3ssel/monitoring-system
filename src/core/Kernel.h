@@ -56,6 +56,8 @@ namespace s21 {
         std::queue<std::string> takeCriticals();
         std::queue<std::string> takeErrors();
         
+        void setLoggerEnabled(bool enabled);
+        
        private:
         std::unique_ptr<Logger> logger_;
         std::unique_ptr<AgentsSearcher> searcher_;

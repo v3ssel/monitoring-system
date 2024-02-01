@@ -13,6 +13,7 @@ Kernel::Kernel(const std::string& agents_directory,
                const std::string& configs_directory,
                const int update_agents_time) {
     logger_ = std::make_unique<ConsoleLogger>();
+    logger_->setEnabled(true);
     searcher_ = std::make_unique<AgentsSearcher>(this, agents_directory, configs_directory);
     writer_ = std::make_unique<LogRecordsWriter>(logs_directory);
 
@@ -239,6 +240,10 @@ std::queue<std::string> Kernel::takeErrors() {
     qerrors_ = std::queue<std::string>();
 
     return tmp;
+}
+
+void Kernel::setLoggerEnabled(bool enabled) {
+    logger_->setEnabled(enabled);
 }
 
 }  // namespace s21

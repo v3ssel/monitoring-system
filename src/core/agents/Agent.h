@@ -25,8 +25,8 @@ namespace s21 {
         std::string name;
         std::string type;
         std::string config_name;
-        std::unordered_map<std::string, std::string> additional_params_;
-        std::vector<std::string> metrics_names_;
+        std::unordered_map<std::string, std::string> additional_params;
+        std::vector<std::string> metrics_names;
 
         Agent();
         virtual ~Agent() = default;

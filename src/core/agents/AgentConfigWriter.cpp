@@ -8,7 +8,7 @@ void AgentConfigWriter::write(const std::string &filename,
                               const std::string &metric_name,
                               const std::string &compare_sign,
                               const std::string &metric_value) {
-    std::fstream file(filename, std::ios::in | std::ios::out);
+    std::fstream file(filename, std::ios::in);
 
     std::queue<std::string> file_contents;
     bool changed = false;

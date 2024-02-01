@@ -27,10 +27,10 @@ namespace s21 {
         Agent::config_name = ".conf" + Agent::type;
         Agent::update_time_ = 3;
 
-        Agent::metrics_names_.push_back("cpu");
-        Agent::metrics_names_.push_back("processes");
+        Agent::metrics_names.push_back("cpu");
+        Agent::metrics_names.push_back("processes");
 
-        for (auto& metric : Agent::metrics_names_) {
+        for (auto& metric : Agent::metrics_names) {
             Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
             Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
         }

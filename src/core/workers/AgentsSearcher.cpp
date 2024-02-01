@@ -43,8 +43,8 @@ void AgentsSearcher::search() {
             if (!created.second)
                 continue;
 
-            readCfg(created.first->second);
             observer_->NotifyNewAgentLoaded(new_agent_name);
+            readCfg(created.first->second);
         }
     } catch (std::exception &e) {
         observer_->NotifyError("ERROR: AgentsSearcher::search(): " + std::string(e.what()));

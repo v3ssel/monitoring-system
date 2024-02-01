@@ -1,3 +1,10 @@
+#if defined __APPLE__
+    #include <dlfcn.h>
+#elif defined __WIN32__
+    #include <windows.h>
+#endif
+
+#include <stdexcept>
 #include "AgentsFactory.h"
 
 namespace s21 {

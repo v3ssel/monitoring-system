@@ -17,17 +17,17 @@ namespace s21 {
     AgentNetwork::AgentNetwork() : Agent() {
         availability_ = 0;
         inet_throughput_ = 100;
-        additional_params_["url"] = "1.1.1.1";
+        additional_params["url"] = "1.1.1.1";
 
         Agent::config_reader_ = std::make_unique<AgentConfigReader>(this);
         Agent::name = "AgentNetwork";
         Agent::type = "NET";
         Agent::config_name = ".conf" + Agent::type;
 
-        Agent::metrics_names_.push_back("availability");
-        Agent::metrics_names_.push_back("inet_throughput");
+        Agent::metrics_names.push_back("availability");
+        Agent::metrics_names.push_back("inet_throughput");
 
-        for (auto& metric : Agent::metrics_names_) {
+        for (auto& metric : Agent::metrics_names) {
             Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
             Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
         }
@@ -53,7 +53,7 @@ namespace s21 {
     };
 
     std::string AgentNetwork::toString() {
-        return "<" + additional_params_["url"] + "> availability : " +std::to_string(this->availability_) +
+        return "<" + additional_params["url"] + "> availability : " +std::to_string(this->availability_) +
                " | inet_throughput : " + std::to_string(this->inet_throughput_);
     };
 }

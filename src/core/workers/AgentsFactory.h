@@ -1,16 +1,7 @@
 #ifndef _AGENTS_FACTORY_H_
 #define _AGENTS_FACTORY_H_
 
-#if defined __APPLE__
-    #include <dlfcn.h>
-#elif defined __WIN32__
-    #include <windows.h>
-#endif
-
-#include <functional>
 #include <memory>
-#include <stdexcept>
-
 #include "../agents/Agent.h"
 
 namespace s21 {

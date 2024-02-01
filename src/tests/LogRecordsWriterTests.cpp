@@ -24,6 +24,7 @@ TEST(LogRecordsWriter, Write) {
     while (std::getline(file, line)) {
         if (line.find("test-test-test-test") != std::string::npos) {
             found = true;
+            break;
         }
     }
 

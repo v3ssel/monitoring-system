@@ -21,13 +21,13 @@ namespace s21 {
         Agent::type = "MEM";
         Agent::config_name = ".conf" + Agent::type;
 
-        Agent::metrics_names_.push_back("ram_total");
-        Agent::metrics_names_.push_back("ram");
-        Agent::metrics_names_.push_back("hard_volume");
-        Agent::metrics_names_.push_back("hard_ops");
-        Agent::metrics_names_.push_back("hard_throughput");
+        Agent::metrics_names.push_back("ram_total");
+        Agent::metrics_names.push_back("ram");
+        Agent::metrics_names.push_back("hard_volume");
+        Agent::metrics_names.push_back("hard_ops");
+        Agent::metrics_names.push_back("hard_throughput");
 
-        for (auto& metric : Agent::metrics_names_) {
+        for (auto& metric : Agent::metrics_names) {
             Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
             Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
         }
