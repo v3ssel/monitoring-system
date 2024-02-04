@@ -6,12 +6,13 @@
 class CommandCaller {
   public:
     static CommandCaller& getInstance();
+    CommandCaller(const CommandCaller &cmd_caller) = delete;
+    CommandCaller& operator=(const CommandCaller &cmd_caller) = delete;
+    
     std::string takeValue(const std::string& command); 
 
   private:
     CommandCaller() = default;
-    CommandCaller(CommandCaller &cmd_caller);
-    CommandCaller(CommandCaller &&cmd_caller);
 };
 
 #endif  // _COMMANDCALLER_H_

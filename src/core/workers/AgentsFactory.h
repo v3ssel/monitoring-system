@@ -15,7 +15,6 @@ namespace s21 {
 
        private:
         AgentsFactory() = default;
-        ~AgentsFactory() = default;
     };
 }
 
