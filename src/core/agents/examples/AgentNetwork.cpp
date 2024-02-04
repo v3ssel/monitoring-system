@@ -24,13 +24,8 @@ namespace s21 {
         Agent::type = "NET";
         Agent::config_name = ".conf" + Agent::type;
 
-        Agent::metrics_names.push_back("availability");
-        Agent::metrics_names.push_back("inet_throughput");
-
-        for (auto& metric : Agent::metrics_names) {
-            Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
-            Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
-        }
+        Agent::addMetric("availability");
+        Agent::addMetric("inet_throughput");
     }
 
     void AgentNetwork::updateMetrics() {

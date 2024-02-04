@@ -26,7 +26,6 @@ namespace s21 {
         std::string type;
         std::string config_name;
         std::unordered_map<std::string, std::string> additional_params;
-        std::vector<std::string> metrics_names;
 
         Agent();
         virtual ~Agent() = default;
@@ -42,6 +41,9 @@ namespace s21 {
         void setObserver(AgentsObserver* observer);
         AgentsObserver* getObserver();
 
+        void addMetric(const std::string& name);
+        std::vector<std::string>& getMetricNames();
+
         void addCriticalValue(const std::string& name, double value);
         void addCriticalComparison(const std::string& name, CmpFunc cmp, CompareType type);
 
@@ -55,6 +57,7 @@ namespace s21 {
         std::unique_ptr<ConfigReader> config_reader_;
 
         std::unordered_map<std::string, AgentData> compare_data_;
+        std::vector<std::string> metrics_names_;
     };
 }
 

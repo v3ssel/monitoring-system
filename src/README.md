@@ -187,16 +187,16 @@ make AgentExtra
     Agent::update_time_ = 3;
     ```
 
-4. Добавьте названия отслеживаемых метрик в **metrics_names**:
+4. Добавьте названия отслеживаемых метрик:
     ```
-    Agent::metrics_names.push_back("cpu");
-    Agent::metrics_names.push_back("processes");
+    Agent::addMetric("cpu");
+    Agent::addMetric("processes");
     ```
 
-5. Рекомендуется так же добавить критическое значение по умолчанию, используя:
+5. [не обязательно] Вы можете так же добавить критическое значение по умолчанию, используя:
     ```
-    Agent::addCriticalComparison(metric, Comparisons<double>::is_equal, CompareType::IS_EQ);
-    Agent::addCriticalValue(metric, std::numeric_limits<double>::max());
+    Agent::addCriticalComparison("cpu", Comparisons<double>::is_equal, CompareType::IS_EQ);
+    Agent::addCriticalValue("cpu", std::numeric_limits<double>::max());
     ```
 
 6. Если ваш агент будет считывать какой-либо конфигурационный файл

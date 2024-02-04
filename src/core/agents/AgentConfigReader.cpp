@@ -37,7 +37,7 @@ void AgentConfigReader::read(const std::string &path) {
             }
         }
         
-        for (auto& metric : agent_->metrics_names) {
+        for (auto& metric : agent_->getMetricNames()) {
             index = line.find_first_of("><!=");
             if (index == std::string::npos) continue;
 

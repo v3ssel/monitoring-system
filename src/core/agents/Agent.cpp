@@ -1,6 +1,7 @@
 #include <fstream>
 #include <limits>
 
+#include "../utils/Comparisons.h"
 #include "Agent.h"
 
 namespace s21 {
@@ -36,6 +37,17 @@ void Agent::setObserver(AgentsObserver *observer) {
 
 AgentsObserver *Agent::getObserver() {
     return observer_;
+}
+
+void Agent::addMetric(const std::string& name) {
+    metrics_names_.push_back(name);
+
+    addCriticalComparison(name, Comparisons<double>::is_equal, CompareType::IS_EQ);
+    addCriticalValue(name, std::numeric_limits<double>::max());
+}
+
+std::vector<std::string>& Agent::getMetricNames() {
+    return metrics_names_;
 }
 
 void Agent::addCriticalValue(const std::string &name, double value) {

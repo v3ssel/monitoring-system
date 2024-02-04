@@ -8,13 +8,13 @@ TEST(AgentConfigReader, Read) {
     std::filesystem::path agent_path = std::filesystem::current_path() / "agents" / Constants::agent_file;
     auto agent = s21::AgentsFactory::GetInstance().LoadAgent(agent_path.string());
     agent->config_name = ".confTST";
-    agent->metrics_names.clear();
-    agent->metrics_names.push_back("gt");
-    agent->metrics_names.push_back("gteq");
-    agent->metrics_names.push_back("lt");
-    agent->metrics_names.push_back("lteq");
-    agent->metrics_names.push_back("eq");
-    agent->metrics_names.push_back("neq");
+    agent->getMetricNames().clear();
+    agent->addMetric("gt");
+    agent->addMetric("gteq");
+    agent->addMetric("lt");
+    agent->addMetric("lteq");
+    agent->addMetric("eq");
+    agent->addMetric("neq");
 
     std::unique_ptr<s21::ConfigReader> reader = std::make_unique<s21::AgentConfigReader>(agent.get());
     std::filesystem::path config_dir = std::filesystem::current_path() / "tests";

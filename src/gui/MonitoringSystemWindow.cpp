@@ -412,7 +412,7 @@ void MonitoringSystemWindow::addAgentMetricsInfo(QFrame *frame, QFont& font, std
     hbox->addWidget(label, 0, Qt::AlignmentFlag::AlignCenter);
     frame->layout()->addWidget(widget);
 
-    for (auto& metric : ag->metrics_names) {
+    for (auto& metric : ag->getMetricNames()) {
         widget = new QWidget(frame);
         hbox = new QHBoxLayout(widget);
 
