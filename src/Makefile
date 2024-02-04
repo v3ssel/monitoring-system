@@ -2,6 +2,7 @@ PROJECTDIR = $(CURDIR)
 BUILDDIR = $(CURDIR)/build
 AGENTSDIR = $(PROJECTDIR)/agents
 AGENTS_SOURCES_DIR = $(PROJECTDIR)/core/agents_src
+DISTPATH = monitoring-system-archive
 
 EXEC = MonitoringSystem.exe
 TEST_EXEC = MSTests.exe
@@ -81,6 +82,16 @@ tests: $(BUILDDIR)-testing
 
 
 dist:
+	mkdir -p $(DISTPATH)
+	cp -R core $(DISTPATH)/
+	cp -R notifications $(DISTPATH)/
+	cp -R config $(DISTPATH)/
+	cp -R controller $(DISTPATH)/
+	cp -R gui $(DISTPATH)/
+	cp CMakeLists.txt $(DISTPATH)
+	tar -cf $(DISTPATH).tar $(DISTPATH)
+	gzip -9f $(DISTPATH).tar
+	rm -rf $(DISTPATH)
 
 
 dvi:
@@ -91,5 +102,5 @@ $(BUILDDIR)-%:
 
 
 clean: 
-	@rm -rf build*
+	@rm -rf build* $(DISTPATH)*
 
