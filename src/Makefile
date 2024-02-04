@@ -20,7 +20,7 @@ ifeq ($(shell uname), Linux)
 endif
 
 
-all: install Agents tests dist dvi clean
+all: install agents tests dist dvi clean
 
 
 install: $(BUILDDIR)-app
@@ -33,15 +33,7 @@ uninstall: clean
 	rm -rf $(EXEC) libMonitoringKernel.* $(AGENTSDIR)/*.so $(AGENTSDIR)/*.dll $(TEST_EXEC)
 
 
-build: $(BUILDDIR)-kernel
-	cd $(BUILDDIR)-kernel && \
-	cmake ../ -DINSTALLING=ON -G "Unix Makefiles" && \
-	cmake --build . --config=Debug
-
-	g++ -g test.cpp libMonitoringKernel.dll -o test.exe
-
-
-Agents: $(BUILDDIR)-agents
+agents: $(BUILDDIR)-agents
 	cd $(BUILDDIR)-agents && \
 	cmake ../ -DBUILD_AGENTS=ON \
 			  -DBUILD_AGENTCPU=ON \
@@ -95,6 +87,7 @@ dist:
 
 
 dvi:
+	open README.md
 
 
 $(BUILDDIR)-%:
