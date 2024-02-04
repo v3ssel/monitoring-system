@@ -1,11 +1,12 @@
 #ifndef _COMMANDCALLER_H_
 #define _COMMANDCALLER_H_
-#include <fstream>
+
+#include <string>
 
 class CommandCaller {
   public:
     static CommandCaller& getInstance();
-    std::string takeValue(std::string command); 
+    std::string takeValue(const std::string& command); 
 
   private:
     CommandCaller() = default;
