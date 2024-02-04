@@ -3,6 +3,7 @@ BUILDDIR = $(CURDIR)/build
 AGENTSDIR = $(PROJECTDIR)/agents
 AGENTS_SOURCES_DIR = $(PROJECTDIR)/core/agents_src
 DISTPATH = monitoring-system-archive
+LINTER = $(PROJECTDIR)/../materials/linters/.clang-format
 
 EXEC = MonitoringSystem.exe
 TEST_EXEC = MSTests.exe
@@ -88,6 +89,14 @@ dist:
 
 dvi:
 	open README.md
+
+
+check:
+	cp $(LINTER) .
+	clang-format --verbose -n */*.cpp */*.h
+	clang-format --verbose -n */*/*.cpp */*/*.h
+	clang-format --verbose -n */*/*/*.cpp */*/*/*.h
+	rm -rf $(notdir $(LINTER))
 
 
 $(BUILDDIR)-%:
