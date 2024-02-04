@@ -16,8 +16,8 @@ set(COMMON_SOURCES
     agents/Agent.cpp
     agents/AgentConfigReader.h
     agents/AgentConfigReader.cpp
-    # agents/CommandCaller.h
-    # agents/CommandCaller.cpp
+    agents/CommandCaller.h
+    agents/CommandCaller.cpp
 
     interfaces/ConfigReader.h
     interfaces/Observer.h
