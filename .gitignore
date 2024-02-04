@@ -49,3 +49,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# add
+.user
+build*
+*/logs/*
+*.user
+mail.txt
+.vscode
+.DS_Store
