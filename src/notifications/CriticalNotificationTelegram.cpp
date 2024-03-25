@@ -5,7 +5,7 @@
 #include "CriticalNotificationTelegram.h"
 
 namespace s21 {
-const std::string CriticalNotificationTelegram::token_ = "6480364672:AAGmS45L0A7KBn1vonIfT5w_J0lw3uTpwOs";
+const std::string CriticalNotificationTelegram::token_ = "**********";
 
 void CriticalNotificationTelegram::sendNotification(const std::string &receiver, const std::vector<std::string>& msgs) {
     std::string url = "\"https://api.telegram.org/bot" + token_ + "/sendMessage\"";

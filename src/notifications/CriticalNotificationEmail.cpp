@@ -5,7 +5,7 @@
 
 namespace s21 {
 const std::string CriticalNotificationEmail::sender_mail_ = "mntrngsstm@gmail.com";
-const std::string CriticalNotificationEmail::sender_password_ = "lckf gpvr bkzg zuuj";
+const std::string CriticalNotificationEmail::sender_password_ = "*******";
 
 void CriticalNotificationEmail::sendNotification(const std::string &receiver, const std::vector<std::string>& msgs) {
     std::filesystem::path mail_path = std::filesystem::current_path() / "mail.txt";
@@ -36,4 +36,4 @@ void CriticalNotificationEmail::sendNotification(const std::string &receiver, co
 }   
 } // namespace s21
 
-// curl --ssl-reqd --url 'smtps://smtp.gmail.com:465' --user 'mntrngsstm@gmail.com:lckf gpvr bkzg zuuj' --mail-from 'mntrngsstm@gmail.com' --mail-rcpt 'danilpenski@gmail.com' --upload-file mail.txt
+// curl --ssl-reqd --url 'smtps://smtp.gmail.com:465' --user 'mntrngsstm@gmail.com:*******' --mail-from 'mntrngsstm@gmail.com' --mail-rcpt 'danilpenski@gmail.com' --upload-file mail.txt
