@@ -1,171 +1,215 @@
-# Monitoring System
+# MonitoringSystem
+In this project, an application for monitoring systemic
+OS indicators in the concept of core-agents. Agents are
+dynamic library implementing the **Agent** interface, and the kernel is their
+manager - it manages their loading, enabling/disabling, processes 
+metrics, etc. This means that you can
+create and load your own agent right at runtime. 
+program.
 
-Implementation of the monitoring system project.
+## Configuration files
+As an example, four different agents have been implemented. Each agent has its own configuration file, the default name of which is constructed from 
+**.conf** + **Agent::type**, all configuration files must be in the same directory.
 
-The russian version of the task can be found in the repository.
+The configuration file is read at agent initialization, and thereafter at specified intervals, defaulting to 2 seconds.
+The following parameters can be changed in the configuration file:
 
-## Contents
+* Agent Name;
 
-1. [Chapter I](#chapter-i) \
-    1.1. [Introduction](#introduction)
-2. [Chapter II](#chapter-ii) \
-    2.1. [Information](#information)
-3. [Chapter III](#chapter-iii) \
-    3.1. [Part 1](#part-1-implementation-of-a-monitoring-system) \
-    3.2. [Part 2](#part-2-notifications) \
-    3.3. [Part 3](#part-3-bonus-implementation-of-an-agent-with-special-metrics) 
-3. [Chapter IV](#chapter-iv) 
+* Agent type;
 
+* Metrics update time;
 
-## Chapter I  
+* Any additional settings in the **key**:**value** format.
 
-![Monitoring System](misc/images/Monitoring_System.JPG)
+* Next, you can add critical values for each metric
+of a particular agent using a simple syntax:
+**metric_name**(<,<=,>,>=,==,!=)**crit_value**
 
->IP Camera 10.5.6.113 
-connecting... \
->Authorization is required: ****** \
-> \
->Authorization granted. \
->Reconnecting... \
-> \
->Live | Archive \
-> \
->Monitoring Department, Monday, 12:00
+### All settings can be changed through the program interface.
 
-The camera image was quite clear, but the necessary information was not there. You need to skip forward.
+## Notifications
+Every time a metric reaches a critical value, you can get a 
+notification to your **Telegram** and **Email** by clicking on the bottom
+on the bottom 
+right square and open notification settings, enable the necessary and
+leave details of where to send messages:
+* For **Telegram** this is your **UserId**, you can find it out via the official 
+bot `@getmyid_bot`.
+* For **Email** this is your mail address
 
->Monitoring Department, Monday, 16:17
+### P.S. Notifications require `curl` installed and specified in your PATH to work
 
-Still nothing.
->Monitoring Department, Monday, 23:35
+## Installation
+Follow these steps to build and install the project:
 
-You could have skipped this part, but even though it was so late at night, the office was full of people. That caught your attention. All of them gathered around someone's table, at which, apparently, the owner was sitting.
-Although the camera had no microphone, it was clear from what was going on that they were having a very intense conversation. \
-Suddenly, two men in uniforms that looked like guards grabbed the sitting man by his armpits and led him in an unknown direction without noticing his attempt to break free.
-The rest of the security staff searched his workplace, but without finding anything interesting or compromising, left in the same direction.
+1. **Clone the repository:**
+    ```
+    git clone [Repository URL]
+    ```
 
->Monitoring Department, Tuesday, 10:53
+2. **Go to the project directory:**
+    ```
+    cd src
+    ```
 
-Nothing. Some of the tables are occupied by employees. 
+3. **Install the project:**
+    ```
+    make install
+    ```
 
->Monitoring Department, Tuesday, 14:21
+The executable file and the **libMonitoringKernel** library needed for the project will be in `src`.
 
-Here it is, finally. Data to access the global monitoring system. It will be possible to analyze it and build a similar one to use for your own purposes!
+## Install agents
+Follow these steps to build all agents:
 
-## Introduction
+1. **Go to the project directory:**
+    ```
+    cd src
+    ```
 
-In this project, you need to implement a program for simple monitoring of the main indicators of the system as kernels and agents. Agents will need to collect metrics and pass them to the kernel, which will log these metrics. When critical values are reached, the system must send notifications to the user.
+2. **Installation:**
+    ```
+    make agents
+    ```
+All built agents will be placed in `./agents`.
 
-
-## Chapter II
-
-## Information
-
-**Monitoring systems** are maintenance systems for continuous surveillance. In a software environment, such a system is a metasystem, i.e. a superstructure over some system that describes it. Monitoring software systems involves *logging* and collecting specific *metrics*. Metrics tell you how much of something there is, like how much memory is available in the computer system or how many centimeters long is the desk. This is a fundamental property of the metric - its computability. In our case, the metrics collected by the monitoring system relate to the program, software package and/or environment that is being monitored. \
-The *critical values* of a metric are the area of the number line of metric values, at which the system should send a notification to the system administrator.
-
-This is obviously a very useful addition, allowing the sysadmin to be automatically notified of critical metric values, without having to look at them all day long.
-This could be, for example, notification about 95% fullness of the hard disk, which means that the administrator should clean the computer.
-
-In this work, you won't have to monitor the status of any special software package, but instead you will have to monitor the status of specific metrics of your operating system. \
-*Logging* means recording the *logs* or *log entries* of the executable software into a separate text file.
-These can be the debug lines you are already familiar with, as well as messages about errors occurring during the program's execution or about the passage of its key stages. In our case, the operating system logs won’t be monitored.
-
-In the vast majority of cases of existing software (*Zabbix*, *Grafana*, *Nagios*, etc.), the monitoring system is a kernel that collects the actual values of metrics (usually in a special non-relational database) and agent programs that collect specific metrics (usually they are logically separated, for example, an agent working with CPU metrics, or an agent working with accumulator metrics, etc.). Agents are lightweight programs that run in the background and collect actual metrics values at a time interval specified in a configuration file. \
-
-As an agent, we suggest using dynamic libraries (*.so), for example, with the `updateMetrics()` method, which allows loading the actual metrics values collected by this agent-library. It is important that not only could there be an arbitrary number of agents, but they could also be dynamically connected/disconnected while the monitoring system kernel is running.
-For example, by loading new agents into some `./agents/` directory. Instead of a database with metrics it is suggested to use a single log-file for the whole monitoring system, in which a list with actual metrics values is written periodically at the time specified in the configuration file in the following form:
-
-```
-[<TIMESTAMP>] | <Metric1> : <Value1> |  <Metric2> : <Value2> |  <Metric3> : <Value3> | ...
+In addition to this you can also build a specific agent, to do this use the
+a specific target for the agent.
 
 ```
+make AgentCPU
+make AgentMemory
+make AgentNetwork
+make AgentExtra
+```
 
-- \<TIMESTAMP\> - timestamp in the format `yy-M-M-dd HH:mm:ss`
+## Usage
+To start the kernel, press the large **START** button.
 
-- \<MetricN\> - Nth metric
+To stop the kernel, PCM click on the metrics window and select **STOP KERNEL**, 
+it will take time for the kernel to come to a complete stop, after which you will return to the
+start screen.
 
-- \<ValueN\> - value of the Nth metric
+By default all agents are looked for in the `./agents` directory relative to the 
+executable file, to change this click on the `./agents` directory on the window with the 
+loaded agents
+(top left square) and select **Change search directory.**;
 
+Similarly, by default, configuration files are searched in the `./config` folder and the 
+agent results are written to `./logs` relative to the executable, they
+can also be changed.
 
-## Chapter III
+You can also disable the search for new agents and recording of new metrics,
+right-click on the desired box and select the necessary setting.
 
-## Part 1. Implementation of a monitoring system
+By selecting a particular agent from the list you can see its settings and time of
+working time. All settings can be changed, the configuration file will be overwritten.
 
-- The program must be developed in C++ language of C++17 standard 
-- The program code must be located in the src folder
-- When writing code it is necessary to follow the Google style
-- The program must be built with Makefile which contains standard set of targets for GNU-programs: all, install, uninstall, clean, dvi, dist, tests. Installation directory could be arbitrary, except the building one
-- Classes must be implemented within the `s21` namespace
-- Prepare full coverage of modules that implement the business logic of the application with unit-tests using the GTest library
-- GUI implementation, based on any GUI library with API for C++17: 
-  * For Linux: GTK+, CEF, Qt, JUCE
-  * For Mac: GTK+, CEF, Qt, JUCE, SFML, Nanogui, Nngui
-- The program must be implemented using the MVC pattern, and also:
-     - there should be no business code in the view code
-     - there should be no interface code in the controller and the model
-     - controllers must be thin
-- The program must consist of a kernel and agents. The kernel must periodically call the appropriate methods of the agents connected to it (dynamic libraries in the folder `./agents/`) and record actual metrics as a list in the monitoring system log in the folder `./logs/`.
-- A separate log file is created for each day of the monitoring system operation. The log file must be named with the full date of the day it was created.
-- The kernel program in a **separate thread** should scan the `./agents/` folder at specified intervals of a few seconds for *new* agents that should be connected to the system and displayed in the interface.
-- New agents must be built via a separate makefile, agent configuration must be done via the configuration file attached to the agent code. During initialization, the agent must read the actual configuration file and save the settings until the end of the program execution or until they are changed by the user.
-- The configuration file must provide the ability to change:
-    - agent name
-    - agent type
-    - list of critical metrics values
-    - metrics update time
-- At least three different types of agents must be provided:
-    - The CPU load monitoring agent must be able to collect the following metrics:
-        - `[double]` CPU load (`cpu`)
-        - `[int]` number of processes (`processes`)
-    - The memory monitoring agent must be able to collect the following metrics:
-        - `[double]` total amount of RAM (`ram_total`)
-        - `[double]` load of RAM in percent (`ram`),
-        - `[double]` usage of hard disk volume (`hard_volume`),
-        - `[int]` number of I/O operations for the hard disk per second (`hard_ops`)
-        - `[double]` hard disk throughput (`hard_throughput `)
-    - The network monitoring agent must be able to collect the following metrics:
-        - `[int : 0 -> not available, 1 -> available]` address availability (`<url>`)
-        - `[double]` throughput of used network interfaces (`inet_throughput`)
-- In the configuration file the metrics are specified by name in Latin (`cpu`, `ram`, `hard_volume`, `hard_ops`, `hard_throughput`, `processors`, `processes`) or via url for address availability metric. It should be possible to specify a critical value for each metric through the equality/non-equality symbol and the number. For example: >=2, ==100, <50, etc.
-- The program interface must display:
-    - the last 20 lines of the log, the log window must be dynamically updated each time a log entry is made
-    - list of connected agents
-- The program interface must allow:
-    - getting detailed information about the agent:
-        - agent type 
-        - list of monitored metrics
-        - time elapsed since agent's start
-        - metrics update time
-    - dynamically changing the configuration of an already running agent (with saving it to a configuration file)
-    - disconnecting the agent selected in the list
+## Uninstall
+To delete an installed project, follow these steps:
 
-## Part 2. Notifications
+1. **Go to the project directory:**
+    ```
+    cd src
+    ```
 
-- To send a notification to the system administrator about a critical situation, a simple *Telegram* bot must be developed that sends a message when the metric reaches its critical value. The message must contain the name of the computer (host), the name of the metric and its value.
-- Provide the ability to enable/disable duplication of notifications to the specified *email address* in the interface.
-- It is allowed to use *any* external С++ libraries working with Telegram and emails to implement the logic of sending messages to Telegram and email.
+2. **Delete the project:** `` ``
+    ```
+    make uninstall
+    ```
+The uninstallation will follow the default paths, if any files have been moved they will not be deleted.
 
-## Part 3. Bonus. Implementation of an agent with special metrics.
+## Testing
+Follow these steps to build and run tests for the project:
 
-Implement at least one more agent collecting additional metrics:
+1. **Go to the project directory:**
+    ```
+    cd src
+    ```
 
-- `[double]` CPU load by privilege level: `idle`, `user`, `priveleged`, `dpc`, `interrupt` (output percentage for each level) (`cpu_idle_usage`, `cpu_user_usage`, ...)
-- `[double]` total swap volume (`total_swap`)
-- `[double]` amount of swap used (`used_swap`) 
-- `[int]` number of processes ready to run in the queue (read about process states in *Unix* if necessary) (`proc_queue_length`)
-- `[double]` counting full and free virtual memory (`virtual_mem_volume`, `virtual_mem_free`)
-- `[int]` total number of inodes (`inodes`)
-- `[double]` average hard disk read time (`hard_read_time`)
-- `[int]` number of errors from the system log (`system_errors`)
-- `[int]` number of user authorizations (`user_auths`)
+2. **Build and run tests:** **
+    ```
+    make tests
+    ```
 
+An executable will be created in `src`.
 
-## Chapter IV
+Testing takes time, it takes time to start and stop the kernel.
 
-Perfect. Monitoring the functionality will be much easier now.  
-But the situation that happened on Monday night makes you uneasy. What exactly happened there, and what was the security service looking for?
+## Build project archive
+Follow these steps to build a project archive:
 
-Having looked closely at the footage, you find nothing that would give you an answer. Most of the people stand with their backs to the camera and without sound there is no way to recognize what the conversation was about. The only thing left on the table after security left was a little sticker that said "Seb's seat".
+1. **Go to the project directory:**
+    ```
+    cd src
+    ```
 
-💡 [Tap here](https://forms.yandex.ru/cloud/64181d4873cee70c2347898c/) **to leave your feedback on the projec**t. Pedago Team really tries to make your educational experience better.
+2. **Build the archive:** `` ``
+    ```
+    make dist
+    ```
+
+## Cleanup of build files
+To remove all temporary and assembly files created during compilation and testing, perform the following steps:
+
+1. **Go to the project directory:**
+    ```
+    cd src
+    ```
+
+2. **Clearing the project:**
+    ```
+    make clean
+    ```
+
+## Create your own agent
+To create your own agent:
+
+1. Create a class that inherits the abstract class 
+**Agent** - `./core/agents/Agent.h`.
+
+2. Create a simple object creation function so the kernel can find your agent, replace **AgentCPU** with your class name:
+    ```
+    extern "C" AgentCPU* create_obj() {
+        return new AgentCPU;
+    }
+    ```
+
+3. Set the parameters **name**, **type**, **config_name**, **update_time_**  default, example:
+    ```
+    Agent::name = "AgentCPU";
+    Agent::type = "CPU";
+    Agent::config_name = ".conf" + Agent::type;
+    Agent::update_time_ = 3;
+    ```
+
+4. Add the names of the metrics to be tracked:
+    ```
+    Agent::addMetric("cpu");
+    Agent::addMetric("processes");
+    ```
+
+5. [Optional] You can also add a critical default value using:
+    ```
+    Agent::addCriticalComparison("cpu", Comparisons<double>::is_equal, CompareType::IS_EQ);
+    Agent::addCriticalValue("cpu", std::numeric_limits<double>::max());
+    ```
+
+6. If your agent will read any configuration file it needs to create **config_reader_**, if you are happy with the format of the agents in the example, then you can use **AgentConfigReader** - `./core/agents/AgentConfigReader.h`. Otherwise, you can inherit the ConfigReader class and
+set your own logic.
+    ```
+    Agent::config_reader_ = std::make_unique<AgentConfigReader>(this);
+    ```
+
+7. Implement the **updateMetrics()** method, in it you should implement the logic of
+reading the data and sending the result to your observer, don't forget to check if
+its presence. Use **observer_->NotifyError** to notify you when an error occurs.
+errors, **observer_->NotifyCritical** for critical metrics, and
+**observer_->NotifyResult** to send the result.
+
+8. Implement the **toString()** method, in it you can nicely represent the last
+result of metrics reading, for example in the format:
+    ```
+    <Metric1> : <Value1> | <Metric2> : <Value2> | <Metric3> : <Value3> | ....
+    ```
